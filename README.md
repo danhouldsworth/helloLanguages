@@ -29,5 +29,5 @@ I'm hopeful of three things to come out of this:
 * Go : ```go run file.go```
 * Javascript : ```node file.js```
 * C : ```cc file.c && ./a.out```
-* Haskell : tbc
+* Haskell : ```ghc --make file.hs && ./file```
 
