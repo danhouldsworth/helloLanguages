@@ -23,4 +23,11 @@ I'm hopeful of three things to come out of this:
 * Files stored within challenge project folders.
 * Filename suffix will make langauge clear, filename should be name of challenge.
 * Folder names prefixed with numbers to enable easy view of increasing difficulty
+* Notes defining the task to be kept in seperate TASK.md and not in each code file, however findings & pitfalls relevant to each language approach should be included appropriately
+
+# Build & interactive environments
+* Go : ```go run file.go```
+* Javascript : ```node file.js```
+* C : ```cc file.c && ./a.out```
+* Haskell : tbc
 
