@@ -2,11 +2,12 @@
 A problem oriented approach as I explore and learn programming languages
 
 # Background
-I tend to have a set approach as I learn a new language that goes along the lines of 'Hello, world!' to get going, then into factorial for basic functions and recursion, and then finally a mandlebrot set for a taster of architecting and displaying a reasonable size task.
+I tend to have a set approach as I learn a new language that goes along the lines of 'Hello, world!' to get going, and then moving onto a factorial calculation for trying basic functions and recursion, and then finally tackling a mandlebrot set for a taster of architecting and displaying a reasonable size task.
+
 I may then move onto a file/socket server, or even a particle simulator to encourage me to explore the nuances of the language more deeply.
 
 # Problem
-However, I frequently realise that I've forgortten much of what I learned, and when I go back to my files for a refresher, each stage has morphed into the next more complex task, and the original 'Hello, World!' is now a fully feldged Telnet server in Go, or a particle simulator in Javascript, or a Mandlebrot set area calculator in ARM assembly...!
+However, I frequently realise that I've forgotten much of what I had learned, and when I go back to my files for a refresher, each stage has morphed into the next more complex task, and the original 'Hello, World!' is now a fully feldged Telnet server in Go, or a particle simulator in Javascript, or a Mandlebrot set area calculator in ARM assembly...!
 None of which are useful as quick reminders.
 
 # Brief
@@ -30,4 +31,21 @@ I'm hopeful of three things to come out of this:
 * Javascript : ```node file.js```
 * C : ```cc file.c && ./a.out```
 * Haskell : ```ghc --make file.hs && ./file```
+
+# Wishlist of my typical challenge tasks
+* String manipulation
+* Iterative calculations
+* Mandlebrot set (text output)
+* Basic web (file) server
+* Basic Telnet chat server
+* Web server with API hooks for local executable actions
+* SuDoCo solver (mainly for Prologue)
+* Websocket server
+* Database access
+* Multi-core calculation (Mandlebrot again - yay!)
+* Display - primative shapes on screen or png
+* Display - high res complex images and manipulation (Buddabrot!)
+* GPIO (ARM, Atmel)
+* Scheduler (ARM, Atmel)
+* GPU (Direct Shader coding in C, OpenCL, WebGL, GPU Accelerator Frameworks)
 
