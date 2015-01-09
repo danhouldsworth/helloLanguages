@@ -32,6 +32,13 @@ I'm hopeful of three things to come out of this:
 * C : ```cc file.c && ./a.out```
 * Haskell : ```ghc --make file.hs && ./file```
 
+# Habbit forming and best practice
+I will impose two more additional constraints in the spirit of learning good habbits :
+* All code should adhere to accepted best standards for both structure and formating - it should pass a linter set to maximum strictness.
+* Aim for (and justify why I believe that) the most elegant solution for the task in each language.
+
+This way if I (or anyone else) reviews or adds to a code challenge at a later date, the solution can be modified or validated objectively.
+
 # Wishlist of my typical challenge tasks
 * String manipulation
 * Iterative calculations

@@ -1,40 +1,35 @@
+"use strict"; /* jshint
+node : true
+*/
 
-var n = 6;
+var n = 7,                          // For n>7 it takes ages!!
+    factorial = function (x) {
+        if (x === 0 || x === 1) {return x; }
+        else {return x * factorial(x - 1); }
+    },
+    fibb = function (x) {
+        if (x === 0 || x === 1) {return x; }
+        else {return fibb(x - 1) + fibb(x - 2); }
+    },
+    pi = function (dp) {
+        if (dp === 0) {return 3; }  // No need for 'else' as already branched
+        var sum = 0.0,              // Seems more elegant to break for the trivial case before declarations
+            lastSum = 0.0,
+            n = 0,
+            leibnizTerm = function (n) {
+                return Math.pow(-1, n) / (n + n + 1);
+            },
+            truncate = function (x, precision) {
+                return parseInt(x * Math.pow(10, precision)) / Math.pow(10, precision); // Does not round
+            };
 
-var factorial = function(x){
-    if (x === 0 || x === 1) return x;
-    else return x * factorial(x - 1);
-};
+        while (true) {              // Iterate until the result is the same as the previous result to n dps
+            lastSum = sum;
+            sum += 4 * leibnizTerm(n++);
+            if (truncate(sum, dp) === truncate(lastSum, dp)) {return truncate(sum, dp); }
+        }
+    };
 
-var fibb = function(x){
-    if (x === 0 || x === 1) return x;
-    else return fibb(x - 1) + fibb(x - 2);
-};
-
-var pi = function(dp){
-    if (dp === 0) return 3; // No need for else as already branched
-
-    function leibnizTerm (n){
-        return Math.pow(-1, n) / (n + n + 1);
-    }
-    function truncate (x, precision) {
-        return parseInt(x * Math.pow(10,precision) ) / Math.pow(10,precision); // Does not round
-    }
-    function round(decimal){
-        return (decimal + 0.5) | 0; // Fast round by bitwise OR
-    }
-
-    var sum = 0.0;
-    var n = 0;
-
-    while ( truncate(sum, dp - 1) !== pi(dp - 1) ) {
-        // console.log(truncate(sum, dp - 1) + " vs " + truncate(lastSum, dp));
-        sum += 4 * leibnizTerm(n++);
-    }
-
-    return truncate(sum, dp);
-}
-
-for (i = 0; i <= n; i++){
-    console.log(i + "! = " + factorial(i) + ",  \t" + i + "th Fibonacci = " + fibb(i) + ",   \t PI=" + pi(i) );
+for (var i = 0; i <= n; i++) {
+    console.log(i + "! = " + factorial(i) + ",  \t" + i + "th Fibonacci = " + fibb(i) + ",  \t PI=" + pi(i));
 }
