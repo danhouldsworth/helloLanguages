@@ -39,6 +39,8 @@ I will impose two more additional constraints in the spirit of learning good hab
 
 This way if I (or anyone else) reviews or adds to a code challenge at a later date, the solution can be modified or validated objectively.
 
+As I get into the more complex algorithms, I should also consider and comment on the efficiency of the solution specific to that language. (Probably need to brush up on http://en.wikipedia.org/wiki/Big_O_notation !!)
+
 # Wishlist of my typical challenge tasks
 * String manipulation
 * Iterative calculations
