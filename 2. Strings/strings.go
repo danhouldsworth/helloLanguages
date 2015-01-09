@@ -1,7 +1,7 @@
-/* House-keeping :
-- Sublime 3 + GoSublime auto calls 'go fmt' on each save
-- Also displays errors with GsLint
-*/
+// 1. Done
+// 2. Done
+// 3. Done
+// Bonus. Failing on string casting
 
 package main
 
@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	greeting := "The quick brown 狐 jumped over the lazy 犬"
+	// greeting := "The quick brown 狐 jumped over the lazy 犬"
+	greeting := "Hello, world!"
 
 	// 1. Backwards
 	var backwardsMsg string
@@ -38,4 +39,9 @@ func main() {
 Learnings for Go:
 - String elements, while intuitively chars, are not 0-255 ints but unicode characters
 - Strings are imutable, so need to think through memory efficiency when manipulating
+*/
+
+/* House-keeping :
+- Sublime 3 + GoSublime auto calls 'go fmt' on each save
+- Also displays errors with GsLint
 */

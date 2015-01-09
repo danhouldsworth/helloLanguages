@@ -1,13 +1,12 @@
-/*
-House-keeping :
-- Use ^j to check for clean code (requires Sublime + jsHint)
-*/
+// 1. Done
+// 2. Done
+// 3. Done
+// Bonus. Done
 
 "use strict"; /* jshint
 node : true
 */
 
-// Good habbit to have single var statement, as ensures we are clear what is in local functional scope vs global
 var greeting = "The quick brown 狐 jumped over the lazy 犬",
     backwardsMsg = "";
 

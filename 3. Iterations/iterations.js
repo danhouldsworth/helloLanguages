@@ -1,8 +1,13 @@
+// 1. Done
+// 2. Done
+// 3. Done
+// Bonus. Further work needed (n=7 in 3s, n=8 in 37s guessing n=10 over an hour).
+
 "use strict"; /* jshint
 node : true
 */
 
-var n = 7,                          // For n>7 it takes ages!!
+var n = 9,
     factorial = function (x) {
         if (x === 0 || x === 1) {return x; }
         else {return x * factorial(x - 1); }

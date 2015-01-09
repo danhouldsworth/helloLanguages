@@ -25,6 +25,7 @@ I'm hopeful of three things to come out of this:
 * Filename suffix will make langauge clear, filename should be name of challenge.
 * Folder names prefixed with numbers to enable easy view of increasing difficulty
 * Notes defining the task to be kept in seperate TASK.md and not in each code file, however findings & pitfalls relevant to each language approach should be included appropriately
+* Comment on anything not immediately clear, however never explain through comments that which can be made clear with better structure and variable names
 
 # Build & interactive environments
 * Go : ```go run file.go```
@@ -33,20 +34,21 @@ I'm hopeful of three things to come out of this:
 * Haskell : ```ghc --make file.hs && ./file```
 
 # Habbit forming and best practice
-I will impose two more additional constraints in the spirit of learning good habbits :
+I will impose three more additional constraints in the spirit of learning good habbits :
 * All code should adhere to accepted best standards for both structure and formating - it should pass a linter set to maximum strictness.
-* Aim for (and justify why I believe that) the most elegant solution for the task in each language.
-
-This way if I (or anyone else) reviews or adds to a code challenge at a later date, the solution can be modified or validated objectively.
+* Aim for (and justify why I believe that) the most elegant solution for the task in each language. This way if I (or anyone else) reviews or adds to a code challenge at a later date, the solution can be modified or validated objectively.
+* Always park downhill! The first line(s) of every file should always be a status of completion or the issue that currently incomplete / stuck on. This will enable me (or others) to quickly jump back in if its been long enough to forget.
 
 As I get into the more complex algorithms, I should also consider and comment on the efficiency of the solution specific to that language. (Probably need to brush up on http://en.wikipedia.org/wiki/Big_O_notation !!)
 
 # Wishlist of my typical challenge tasks
 * String manipulation
 * Iterative calculations
+* External input (command line, config file or user)
 * Mandlebrot set (text output)
 * Basic web (file) server
 * Basic Telnet chat server
+* Modular approach
 * Web server with API hooks for local executable actions
 * SuDoCo solver (mainly for Prologue)
 * Websocket server
@@ -55,6 +57,6 @@ As I get into the more complex algorithms, I should also consider and comment on
 * Display - primative shapes on screen or png
 * Display - high res complex images and manipulation (Buddabrot!)
 * GPIO (ARM, Atmel)
-* Scheduler (ARM, Atmel)
+* Scheduler - non blocking sub tasks in a single thread
 * GPU (Direct Shader coding in C, OpenCL, WebGL, GPU Accelerator Frameworks)
 

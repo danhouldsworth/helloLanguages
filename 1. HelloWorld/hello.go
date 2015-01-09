@@ -1,3 +1,6 @@
+// 1. Done
+// Bonus. Done
+
 package main
 
 import (
@@ -5,7 +8,7 @@ import (
 )
 
 func main() {
-	var message string = "Hello" // Statically typed but inferred from declaration type.
-	message += ", " + "world!"   // Concatenation
-	f.Println(message)           // (I think) all exposed methods of imported module are capitalised
+	message := "Hello"         // Statically typed but inferred from declaration type.
+	message += ", " + "world!" // Concatenation same as javascript
+	f.Println(message)         // (I think) all exposed methods of imported module are capitalised
 }
