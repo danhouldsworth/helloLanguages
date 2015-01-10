@@ -33,6 +33,7 @@ I'm hopeful of three things to come out of this:
 * C : ```cc file.c && ./a.out```
 * Haskell : ```ghc --make file.hs && ./file```
 * Ruby : ```ruby file.rb```
+* Java : ```javac file.java && java file```
 
 # Habbit forming and best practice
 I will impose three more additional constraints in the spirit of learning good habbits :
