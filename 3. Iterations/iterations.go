@@ -1,7 +1,7 @@
 // 1. Done
 // 2. Done
-// 3. Need to think through extracting digits from float64
-// 4. Bonus. Todo.
+// 3. Done
+// 4. Bonus. Pretty slow so far, 2-3x slower than js :-(
 
 package main
 
@@ -30,33 +30,25 @@ func leibnizTerm(n int) float64 {
 	return math.Pow(-1, float64(n)) / float64(n+n+1)
 }
 
-func piDigit(dps int) (n int, sum float64) {
-	if dps == 0 {
-		sum = 3.0
-		return
-	}
-	for n, sum = 0, 0.0; true; n++ {
-		sum += leibnizTerm(n)
-		return // testing
-	}
-	return
+func truncate(x float64, dp int) float64 {
+	return math.Floor(math.Pow(10, float64(dp))*x) / math.Pow(10, float64(dp))
 }
 
-func displayPiDigit(x int) {
-	_, digit := piDigit(x) // Ignore the first of the two values
-	fmt.Printf("%f", digit)
+func pi(dp int) float64 {
+	for n, lastSum, sum := 0, 0.0, 0.0; ; n++ {
+		lastSum = truncate(sum, dp) // Truncating now saves me 2 more later.
+		sum += 4 * leibnizTerm(n)
+		if truncate(sum, dp) == lastSum {
+			return lastSum
+		}
+	}
 }
 
 func main() {
-
 	n := 7
 
 	for i := 0; i <= n; i++ {
-		fmt.Printf("%d! = %d,  \t%dth Fibonacci = %d,  \tPI = ", i, factorial(i), i, fib(i))
-		for j := 0; j <= i; j++ {
-			displayPiDigit(j)
-		}
-		fmt.Println()
+		fmt.Printf("%d! = %d,  \t%dth Fibonacci = %d,  \tPI = %g\n", i, factorial(i), i, fib(i), pi(i))
 	}
 }
 

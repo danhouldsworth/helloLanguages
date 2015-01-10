@@ -6,7 +6,7 @@ Given an integer n, display to std out the following for all values from 0 -> n 
 2. The nth Fibonacci number
 3. PI correct to n decimal places using Leibniz series
 
-Bonus : What is the fastest you can calculate PI to 10dps still using Leibniz series?
+Bonus : What is the fastest we can calculate PI to 10dps still using Leibniz series?
 
 Notes :
  - Turns out Leibniz series for PI converges very slowly. It takes 1bn iterations just to get 10dps!

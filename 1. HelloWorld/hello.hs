@@ -1,4 +1,5 @@
 -- 1. Done
 -- Bonus. ToDo
 
-main = putStrLn "Hello, world!"
+main = do
+    putStrLn ("Hello" ++ ", " ++ "world!") -- Note the concatenation is different to C, Go & JS

@@ -28,10 +28,11 @@ I'm hopeful of three things to come out of this:
 * Comment on anything not immediately clear, however never explain through comments that which can be made clear with better structure and variable names
 
 # Build & interactive environments
-* Go : ```go run file.go```
+* Go : ```go run file.go``` or ```go build file.go && ./file```
 * Javascript : ```node file.js```
 * C : ```cc file.c && ./a.out```
 * Haskell : ```ghc --make file.hs && ./file```
+* Ruby : ```ruby file.rb```
 
 # Habbit forming and best practice
 I will impose three more additional constraints in the spirit of learning good habbits :
@@ -48,7 +49,8 @@ As I get into the more complex algorithms, I should also consider and comment on
 * Mandlebrot set (text output)
 * Basic web (file) server
 * Basic Telnet chat server
-* Modular approach
+* Closures (while I use this in JS I could do with a more intuitive understanding)
+* Modular architecture (eg. external libraries)
 * Web server with API hooks for local executable actions
 * SuDoCo solver (mainly for Prologue)
 * Websocket server

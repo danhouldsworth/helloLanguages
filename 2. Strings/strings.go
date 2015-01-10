@@ -1,7 +1,7 @@
 // 1. Done
 // 2. Done
 // 3. Done
-// Bonus. Failing on string casting
+// Bonus. Failing on string casting of unicode chinese
 
 package main
 
@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	// greeting := "The quick brown 狐 jumped over the lazy 犬"
-	greeting := "Hello, world!"
+	greeting := "The quick brown 狐 jumped over the lazy 犬"
+	// greeting := "Hello, world!"
 
 	// 1. Backwards
 	var backwardsMsg string
