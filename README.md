@@ -35,6 +35,7 @@ I'm hopeful of three things to come out of this:
 * Ruby : ```ruby file.rb```
 * Java : ```javac file.java && java file```
 * Python: ```python file.py```
+* Perl: ``` perl file.pl ```
 
 # Habbit forming and best practice
 I will impose three more additional constraints in the spirit of learning good habbits :
