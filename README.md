@@ -37,6 +37,7 @@ I'm hopeful of three things to come out of this:
 * Python: ```python file.py```
 * Perl: ``` perl file.pl ```
 * Lisp: ``` clisp file.lisp ```
+* PHP: ``` php file.php ```
 
 # Habbit forming and best practice
 I will impose three more additional constraints in the spirit of learning good habbits :
