@@ -1,5 +1,5 @@
-; Normal printing
+; 1. Done
 (print "Hello, World")
 
-; String Concatenation
+; Bonus. Done
 (print (concatenate 'string "Hello" ", " "World"))
