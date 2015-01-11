@@ -1,7 +1,7 @@
 // 1. Done
 // 2. Done
 // 3. Done
-// Bonus. Done. but embarrasingly its slightly slower than javascript..! (n=7 in 3.2s, n=8 in 46s)
+// Bonus. Done. When compiling with -Ofast it nails javascript!! (n=7 in 0.5s, n=8 in 4.8s), [even -O3 does n=8 in 21.6s]
 
 #include <stdio.h>
 #include <math.h>
@@ -33,9 +33,9 @@ double pi(int dp){
     double lastSum;
     double sum = 0;
 
-    for (unsigned long int n = 0; ; n++) { // Note : this will overflow at 2^32 ie before the estimated 5bn terms for 10 dps
+    for (unsigned long int n = 0; ; ) { // Note : this will overflow at 2^32 ie before the estimated 5bn terms for 10 dps
         lastSum = truncate(sum, dp);
-        sum += 4.0 * leibnizTerm(n);
+        sum += 4.0 * leibnizTerm(n++);
         if (truncate(sum, dp) == lastSum) return lastSum;
     }
 }
