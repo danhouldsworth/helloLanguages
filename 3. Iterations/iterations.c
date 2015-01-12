@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <math.h>
 
-int fact(int x);    // I think these are called prototypes. Either way, need to define functions before they are called
-int fib(int x);     // Interestingly, like go they can't be defined locally within another function.
+int fact(int x);    // Function prototypes. No body, just a declaration of the functions interface. [Interestingly, like go they can't be defined locally within another function.]
+int fib(int x);
 double pi(int dp);
 double truncate(double x, int dp);
 double leibnizTerm(unsigned long int n);
