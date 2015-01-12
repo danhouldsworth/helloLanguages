@@ -48,10 +48,6 @@ I will impose three more additional constraints in the spirit of learning good h
 As I get into the more complex algorithms, I should also consider and comment on the efficiency of the solution specific to that language. (Probably need to brush up on http://en.wikipedia.org/wiki/Big_O_notation !!)
 
 # Wishlist of my typical challenge tasks
-* String manipulation
-* Iterative calculations
-* External input (command line, config file or user)
-* Mandlebrot set (text output)
 * Basic web (file) server
 * Basic Telnet chat server
 * Closures (while I use this in JS I could do with a more intuitive understanding)
@@ -63,7 +59,13 @@ As I get into the more complex algorithms, I should also consider and comment on
 * Multi-core calculation (Mandlebrot again - yay!)
 * Display - primative shapes on screen or png
 * Display - high res complex images and manipulation (Buddabrot!)
+* Display - Raytracing
 * GPIO (ARM, Atmel)
 * Scheduler - non blocking sub tasks in a single thread
 * GPU (Direct Shader coding in C, OpenCL, WebGL, GPU Accelerator Frameworks)
 
+# Collaboration
+Please feel free to :
+* Tackle any of the tasks in any language
+* Add suitable challenge tasks
+* Constructively critique existing solutions
