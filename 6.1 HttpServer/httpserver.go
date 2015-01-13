@@ -1,4 +1,5 @@
 // 1. Done
+// 2. Done
 
 package main
 
@@ -8,7 +9,8 @@ import (
 )
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "<h1>Go : Hello, world!</h1>")
+	uri := r.URL.Path[1:]
+	io.WriteString(w, "<h1>Go : Hello "+uri+"!</h1>")
 }
 
 func main() {

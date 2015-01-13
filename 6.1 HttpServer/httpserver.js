@@ -1,8 +1,16 @@
 // 1. Done
+// 2. Done
 
-var http = require('http');
+'use strict'; /* jshint
+node : true
+*/
 
-http.createServer(function (req, res){
-    res.writeHead(200, {'Content-Type' : 'text/html'});
-    res.end("<html><h1>Hello, World!</h1></html>");
-}).listen(8888);
+var http = require('http'),
+    url = require('url'),
+    hello = function (req, res) {
+        var uri = url.parse(req.url).pathname.replace('/','');
+        res.writeHead(200, {'Content-Type' : 'text/html'});
+        res.end('<h1>Node.js : Hello, ' + uri + '!</h1>');
+    };
+
+http.createServer(hello).listen(8888);
