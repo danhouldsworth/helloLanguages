@@ -1,6 +1,7 @@
 // 1. Done
-// 2. Done
-// Bonus. Todo..
+// 2. Done (not since revision)
+// 3. Done (not since revision)
+// Bonus....
 
 'use strict'; /* jshint
 node : true
@@ -10,12 +11,12 @@ var http = require('http'),
     url = require('url'),
     path = require('path'),
     fs = require('fs'),
-    hello = function (req, res) {
+    hello2 = function (req, res) {
         var uri = url.parse(req.url).pathname.replace('/', '');
         res.writeHead(200, {'Content-Type' : 'text/html'});
         res.end('<h1>Node.js : Hello, ' + uri + '!</h1>');
     },
-    bonus = function (req, res) {
+    hello3 = function (req, res) {
         var uri = url.parse(req.url).pathname.replace('/', ''),
             filename = path.join(process.cwd(), uri);
 
@@ -35,5 +36,5 @@ var http = require('http'),
         });
     };
 
-http.createServer(hello).listen(8887);
-http.createServer(bonus).listen(8888);
+http.createServer(hello2).listen(8887);
+http.createServer(hello3).listen(8888);
