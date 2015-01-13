@@ -1,5 +1,6 @@
 // 1. Done
 // 2. Done
+// Bonus. Done
 
 package main
 
@@ -14,6 +15,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", hello)
+	// http.HandleFunc("/", hello)
+	http.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir(".")))) // Bonus
 	http.ListenAndServe(":8888", nil)
 }
