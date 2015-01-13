@@ -1,4 +1,4 @@
-// 1. Done
+// 1. Done (Area = 1.507 with 10000x10000 to 10000dwell in 11m53s)
 
 var realMax = 1.0,
     realMin = -2.0,
@@ -6,7 +6,7 @@ var realMax = 1.0,
     imagMin = -1.5,
     steps = 10000,
     area = 0,
-    maxDwell = 1000;
+    maxDwell = 10000;
 
 for (var i = 0; i <= steps; i++){
     for (var j = 0; j <= steps; j++){

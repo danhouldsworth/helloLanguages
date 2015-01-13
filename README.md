@@ -48,14 +48,10 @@ I will impose three more additional constraints in the spirit of learning good h
 As I get into the more complex algorithms, I should also consider and comment on the efficiency of the solution specific to that language. (Probably need to brush up on http://en.wikipedia.org/wiki/Big_O_notation !!)
 
 # Wishlist of my typical challenge tasks
-* Basic web (file) server
-* Basic Telnet chat server
 * Closures (while I use this in JS I could do with a more intuitive understanding)
 * Modular architecture (eg. external libraries)
 * Web server with API hooks for local executable actions
 * SuDoCo solver (mainly for Prologue)
-* Websocket server
-* Database access
 * Multi-core calculation (Mandlebrot again - yay!)
 * Display - primative shapes on screen or png
 * Display - high res complex images and manipulation (Buddabrot!)
