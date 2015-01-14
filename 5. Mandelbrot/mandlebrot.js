@@ -38,7 +38,7 @@ function mapImag(pixelsY) {
 }
 
 
-for (var i = 0; i <= steps; i++) {
+for (var i = 0; i <= steps; i++) { // Note : this is scanning in vertical lines rather than the usual horizontal
     for (var j = 0; j <= steps; j++) {
         if (isMandy(mapReal(i), mapImag(j))) {area++; }
     }

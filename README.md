@@ -22,9 +22,10 @@ I'm hopeful of three things to come out of this:
 
 # Structure
 * Files stored within challenge project folders.
+* Folder names prefixed with numbers to enable easy view of increasing difficulty, grouping challenges with decimals
 * Filename suffix will make langauge clear, filename should be name of challenge.
-* Folder names prefixed with numbers to enable easy view of increasing difficulty
 * Notes defining the task to be kept in seperate TASK.md and not in each code file, however findings & pitfalls relevant to each language approach should be included appropriately
+* Each successive task challenge should aim to leave the code so that it still clearly solves the previous tasks. (eg. The Bonus challenge should require a wholesale rewrite)
 * Comment on anything not immediately clear, however never explain through comments that which can be made clear with better structure and variable names
 
 # Build & interactive environments
@@ -50,7 +51,6 @@ As I get into the more complex algorithms, I should also consider and comment on
 # Wishlist of my typical challenge tasks
 * Closures (while I use this in JS I could do with a more intuitive understanding)
 * Modular architecture (eg. external libraries)
-* Web server with API hooks for local executable actions
 * SuDoCo solver (mainly for Prologue)
 * Multi-core calculation (Mandlebrot again - yay!)
 * Display - primative shapes on screen or png
