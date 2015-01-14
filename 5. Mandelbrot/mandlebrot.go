@@ -1,9 +1,16 @@
 // 1. Done [area=1.507 in 12m35s at steps=10k, dwell=10k]
 
-/*
-Learning. Fell into some serious traps with division of integer types within a larger float calc. Intuitly reads as a ratio, but returns 0 with no error
-Added ratio function to get around
-Also note the complex types and methods. Easy now, but this took me some time as wasn't intuitive
+/* Learnings :
+1. I fell into some serious traps with division of integer types within a larger float calc. Intuitly reads as a ratio, but returns 0 with no error.
+2. Also note the complex types and methods. Easy now, but this took me some time as wasn't intuitive. I like being able to to z = z*z + c
+3. Real shame that it takes 4 lines...
+        dwell++
+        if dwell >= maxDwell {
+            return true
+        }
+to write what would be 1 equally clear line in C...
+        if (dwell++ >= maxDwell) return true
+4. Note that vars declared in the (only loop statement) 'for' are local to that loop and not available once finished
 */
 
 package main
