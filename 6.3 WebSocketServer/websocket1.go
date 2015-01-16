@@ -1,7 +1,4 @@
 // 1. Done
-// 2. Not yet
-// 3. Not yet
-// Bonus. Not yet
 
 // To run must set $GOPATH
 // and either run: go install
@@ -10,9 +7,9 @@
 package main
 
 import (
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-	"github.com/gorilla/websocket"
 )
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +20,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// If the for loop should exit, close the connection
-	// For more info on why this is here instead of at 
+	// For more info on why this is here instead of at
 	// the end of the function see: http://blog.golang.org/defer-panic-and-recover
 	defer conn.Close()
 
@@ -35,13 +32,13 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Print the message they have just sent to us
 		log.Println(string(msg))
-		
+
 		// Print the message type, todo: not working well
 		log.Println(string(messageType))
 
 		//Send the message back to them
 		if err = conn.WriteMessage(websocket.TextMessage, msg); err != nil {
-			return 
+			return
 		}
 	}
 }

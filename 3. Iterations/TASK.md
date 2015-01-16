@@ -1,12 +1,9 @@
 #Task
 
-Given an integer n, display to std out the following for all values from 0 -> n :
+1. Given an integer n, for all values from 0 -> n calculate both n! and the nth Fibonacci number
+2. Display PI correct to n decimal places using Leibniz series
 
-1. n factorial
-2. The nth Fibonacci number
-3. PI correct to n decimal places using Leibniz series
-
-Bonus : What is the fastest we can calculate PI to 10dps still using Leibniz series?
+Bonus : What is the fastest we can calculate PI to 10dps still using Leibniz series? What are some pitfalls?
 
 Notes :
  - Turns out Leibniz series for PI converges very slowly. It takes 1bn iterations just to get 10dps!

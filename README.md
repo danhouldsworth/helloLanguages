@@ -23,10 +23,10 @@ I'm hopeful of three things to come out of this:
 # Structure
 * Files stored within challenge project folders.
 * Folder names prefixed with numbers to enable easy view of increasing difficulty, grouping challenges with decimals
-* Filename suffix will make langauge clear, filename should be name of challenge.
+* Filename suffix will make langauge clear, filename should be name of challenge and subtask.
 * Notes defining the task to be kept in seperate TASK.md and not in each code file, however findings & pitfalls relevant to each language approach should be included appropriately
-* Each successive task challenge should aim to leave the code so that it still clearly solves the previous tasks. (eg. The Bonus challenge should require a wholesale rewrite)
-* Comment on anything not immediately clear, however never explain through comments that which can be made clear with better structure and variable names
+* Each successive task challenge should be tackled seperately so the code can be critiqued on how elegantly it tackles each of the tasks.
+* Comment on anything not immediately clear, however never explain through comments that which can be made clear with better structure and variable names, or likewise something that has been adequatly explained in a previous subtask.
 
 # Build & interactive environments
 * Go : ```go run file.go``` or ```go build file.go && ./file```
@@ -36,9 +36,9 @@ I'm hopeful of three things to come out of this:
 * Ruby : ```ruby file.rb```
 * Java : ```javac file.java && java file```
 * Python: ```python file.py```
-* Perl: ``` perl file.pl ```
-* Lisp: ``` clisp file.lisp ```
-* PHP: ``` php file.php ```
+* Perl: ```perl file.pl```
+* Lisp: ```clisp file.lisp```
+* PHP: ```php file.php```
 
 # Habbit forming and best practice
 I will impose three more additional constraints in the spirit of learning good habbits :
@@ -50,15 +50,17 @@ As I get into the more complex algorithms, I should also consider and comment on
 
 # Wishlist of my typical challenge tasks
 * Closures (while I use this in JS I could do with a more intuitive understanding)
-* Modular architecture (eg. external libraries)
+* Modular architecture (eg. external libraries) / Submit a public package library?
+* Bindings to system calls / libc routines / or my own in other languages (I'm sure this is straight forward as read about it all the time but I've currently got no idea what it is...!)
+* Functional & unit tests (again - would love to get into this habbit, but currently have zero experience)
 * SuDoCo solver (mainly for Prologue)
 * Multi-core calculation (Mandlebrot again - yay!)
 * Display - primative shapes on screen or png
 * Display - high res complex images and manipulation (Buddabrot!)
 * Display - Raytracing
+* GPU (Direct Shader coding in C, OpenCL, WebGL, GPU Accelerator Frameworks)
 * GPIO (ARM, Atmel)
 * Scheduler - non blocking sub tasks in a single thread
-* GPU (Direct Shader coding in C, OpenCL, WebGL, GPU Accelerator Frameworks)
 
 # Collaboration
 Please feel free to :

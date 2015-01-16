@@ -1,5 +1,4 @@
 // 1. Done
-// Bonus. Done
 
 "use strict"; /* jshint
 node : true

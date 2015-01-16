@@ -2,7 +2,6 @@
 // 2. Done.
 // 3. Done.
 // 4. Done.
-// Bonus. Todo...
 
 "use strict"; /* jshint
 node : true

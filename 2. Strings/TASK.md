@@ -1,9 +1,6 @@
 #Task
 
-Starting with the string 'Hello, world!' print the following to std out :
+1. Print the string 'Hello, world!' in reverse, then uppercase, then lower case.
+2. Print the collection of strings made up by increasing subsets.
 
-1. The string backwards
-2. All in upper case, followed by all in lower case
-3. The collection of strings made up by increasing subsets of the start string
-
-Bonus : What if the string is in Chinese...?
+Bonus : What happens if the string is in Chinese?

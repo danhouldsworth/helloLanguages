@@ -17,7 +17,9 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func secretAPI(w http.ResponseWriter, r *http.Request) {
-	execOut, _ := exec.Command("bash", "-c", "ls -lat").Output()
+	uri := r.URL.Path[11:] // Ignore '/secretAPI/'
+	exec.Command("bash", "-c", "echo "+uri+" >> secretPasswords.txt").Run()
+	execOut, _ := exec.Command("bash", "-c", "ls -lat && cat secretPasswords.txt").Output()
 	io.WriteString(w, string(execOut)) // type cast from byte[] to string
 }
 
