@@ -8,9 +8,9 @@ var realMax = 1.0,
     realMin = -2.0,
     imagMax = 1.5,
     imagMin = -1.5,
-    steps = 10000,
+    steps = 1000,
     area = 0,
-    maxDwell = 10000;
+    maxDwell = 1000;
 
 function isMandy(Cx, Cy) {
 
@@ -37,12 +37,10 @@ function mapImag(pixelsY) {
     return imagMin + (pixelsY / steps) * (imagMax - imagMin);
 }
 
-
-for (var i = 0; i <= steps; i++) { // Note : this is scanning in vertical lines rather than the usual horizontal
-    for (var j = 0; j <= steps; j++) {
+for (var j = 0; j <= steps; j++) {
+    for (var i = 0; i <= steps; i++) {
         if (isMandy(mapReal(i), mapImag(j))) {area++; }
     }
 }
 
 console.log("Area of mandlebrot set = " + area * (realMax - realMin) * (imagMax - imagMin) / (steps * steps)); // Units : [pixels * pixels] * [real/pixels] * [imag/pixels] == real * imag == area
-
