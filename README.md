@@ -21,19 +21,20 @@ I'm hopeful of three things to come out of this:
 3. Develope an appreciation for the contrasting paradigms of each language.
 
 # Structure
-* Files stored within challenge project folders.
-* Folder names prefixed with numbers to enable easy view of increasing difficulty, grouping challenges with decimals
+* Files will be stored within challenge project folders.
+* Folder names prefixed numerically to enable easy view of increasing difficulty
 * Filename suffix will make langauge clear, filename should be name of challenge and subtask.
 * Notes defining the task to be kept in seperate TASK.md and not in each code file, however findings & pitfalls relevant to each language approach should be included appropriately
 * Each successive task challenge should be tackled seperately so the code can be critiqued on how elegantly it tackles each of the tasks.
 * Comment on anything not immediately clear, however never explain through comments that which can be made clear with better structure and variable names, or likewise something that has been adequatly explained in a previous subtask.
+* If I'm able, I will set bonus questions that provoke insight into the difference between languages but do not require wholesale code rewrite of solutions.
 
-# Build & interactive environments
+# Build, execution & interactive environments
 * Go : ```go run file.go``` or ```go build file.go && ./file```
-* Javascript : ```node file.js```
+* Javascript : ```node``` or ```node file.js```
 * C : ```cc file.c && ./a.out```
-* Haskell : ```ghc --make file.hs && ./file```
-* Ruby : ```ruby file.rb```
+* Haskell : ```ghci``` or ```ghc --make file.hs && ./file```
+* Ruby : ```irb``` or ``ruby file.rb```
 * Java : ```javac file.java && java file```
 * Python: ```python file.py```
 * Perl: ```perl file.pl```
@@ -42,20 +43,22 @@ I'm hopeful of three things to come out of this:
 
 # Habbit forming and best practice
 I will impose three more additional constraints in the spirit of learning good habbits :
-* All code should adhere to accepted best standards for both structure and formating - it should pass a linter set to maximum strictness.
-* Aim for (and justify why I believe that) the most elegant solution for the task in each language. This way if I (or anyone else) reviews or adds to a code challenge at a later date, the solution can be modified or validated objectively.
-* Always park downhill! The first line(s) of every file should always be a status of completion or the issue that currently incomplete / stuck on. This will enable me (or others) to quickly jump back in if its been long enough to forget.
+* All code should adhere to accepted best standards for both structure and formating - and should pass a linter set to maximum strictness.
+* Aim for (and justify why I believe that) the most elegant solution for the task in each language. This way if I (or anyone else) reviews or adds to a code challenge at a later date, the solution validated objectively.
+* Always park downhill! The first line of every file must be a comment of completion or the issue to overcome. This will enable quickly jumping back in to any task attempt.
 
 As I get into the more complex algorithms, I should also consider and comment on the efficiency of the solution specific to that language. (Probably need to brush up on http://en.wikipedia.org/wiki/Big_O_notation !!)
 
 # Wishlist of my typical challenge tasks
 * Closures (while I use this in JS I could do with a more intuitive understanding)
 * Modular architecture (eg. external libraries) / Submit a public package library?
-* Bindings to system calls / libc routines / or my own in other languages (I'm sure this is straight forward as read about it all the time but I've currently got no idea what it is...!)
+* Bindings to system calls / libc routines / or my own routines in other languages (While I'm sure this is straight forward - as read about it all the time - I've currently got no idea what it is...!)
 * Functional & unit tests (again - would love to get into this habbit, but currently have zero experience)
 * SuDoCo solver (mainly for Prologue)
-* Multi-core calculation (Mandlebrot again - yay!)
+* Multi-core algorithms
+* Distributed algorithms & servers
 * Display - primative shapes on screen or png
+* Display - animation (which is simpler - a native visual api OR backend websocket feeding data to HTML front?)
 * Display - high res complex images and manipulation (Buddabrot!)
 * Display - Raytracing
 * GPU (Direct Shader coding in C, OpenCL, WebGL, GPU Accelerator Frameworks)

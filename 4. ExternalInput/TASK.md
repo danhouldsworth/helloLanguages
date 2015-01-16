@@ -1,6 +1,6 @@
 #Task
 
-Each time, display to std out both variables ```name``` and ```age```, capitalising ```name``` and converting ```age``` to months :
+Each time, read both variables ```name``` and ```age```, capitalising ```name``` and converting ```age``` to months :
 
 1. Take two arguments from the command line assuming in the order of ```name``` ```age```
 2. Declare ```name``` ```age``` in a library program file
