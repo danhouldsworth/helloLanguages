@@ -1,6 +1,4 @@
-// 1. Done
-// 2. Done (for sinlge digits 0-4 !)
-// 3. Done
+// 2. Done (only for 1st digit and if 0-4 !!)
 
 package main
 
@@ -20,7 +18,6 @@ func handleConnection(c net.Conn) {
 	welcome := []byte("\n\n --- Welcome to Telnet Echo & Double in Go! --- \n\n")
 	echo := []byte("Server echo service : ")
 	double := []byte("Server doubling service : ")
-	bye := []byte("\n\n --- Bye for now!! --- \n\n")
 
 	c.Write(welcome)
 	for {
@@ -30,14 +27,9 @@ func handleConnection(c net.Conn) {
 			messageBuffer[0] -= 48
 			messageBuffer[0] *= 2
 			messageBuffer[0] += 48
-			c.Write(double)
-			c.Write(messageBuffer)
-		} else if messageBuffer[0] == 'q' && messageBuffer[1] == 'u' && messageBuffer[2] == 'i' && messageBuffer[3] == 't' {
-			c.Write(bye)
-			c.Close()
+			c.Write(append(double, messageBuffer...))
 		} else {
-			c.Write(echo)
-			c.Write(messageBuffer)
+			c.Write(append(echo, messageBuffer...))
 		}
 	}
 }
