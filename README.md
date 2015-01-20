@@ -57,7 +57,6 @@ As I get into the more complex algorithms, I should also consider and comment on
 * SuDoCo solver (mainly for Prologue)
 * Multi-core algorithms
 * Distributed algorithms & servers
-* Display - primative shapes on screen or png
 * Display - animation (which is simpler - a native visual api OR backend websocket feeding data to HTML front?)
 * Display - high res complex images and manipulation (Buddabrot!)
 * Display - Raytracing
