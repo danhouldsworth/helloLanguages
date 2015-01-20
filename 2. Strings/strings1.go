@@ -18,7 +18,6 @@ import (
 
 func main() {
 	greeting := "The quick brown 狐 jumped over the lazy 犬"
-	// greeting := "Hello, world!"
 
 	var backwardsMsg string
 
