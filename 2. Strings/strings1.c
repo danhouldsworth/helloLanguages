@@ -1,5 +1,4 @@
 // 1. Done (Ye-hah!)
-// Bonus Q. Fails but shows insight into 3byte(?) nature of unicode.
 
 /*
 Learnings : Although ```greeting``` & ```ptr``` are both pointers to the same string, ```greeting``` is fixed.
@@ -9,8 +8,8 @@ Learnings : Although ```greeting``` & ```ptr``` are both pointers to the same st
 
 int main(int argc, char *argv[]){
 
-    // char greeting[] = "Hello, world!";
-    char greeting[] = "The quick brown 狐 jumped over the lazy 犬";
+    char greeting[] = "Hello, world!";
+    // char greeting[] = "The quick brown 狐 jumped over the lazy 犬";
     char* ptr = greeting;
     int index = 0;
 

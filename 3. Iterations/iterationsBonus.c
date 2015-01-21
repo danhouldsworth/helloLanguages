@@ -1,23 +1,21 @@
+// Bonus. Done
+// With n=100bn (1e11) it solves PI to 10 dps in 6min30sec (compiled with -Ofast on 17"MBP)
+
 #include <stdio.h>
 
-int main()
-{
+int main() {
     double sum = 1.0;
     double denominator = 3.0;
     double numerator = 1.0;
-    double temp;
-    unsigned long long counter = 0;
+    unsigned long long n = 0;
 
-    while (counter++ < 1e13)
-    {
+    while (n++ < 1e11) {
         numerator = -numerator;
-        temp = numerator;
-        temp /= denominator;
-        sum += temp;
+        sum += numerator / denominator;
         denominator += 2;
     }
-    temp = counter;
-            printf("%19.0f Iterations, pi estimate = %19.17f\n",temp, 4*sum);
+
+    printf("After %lld iterations, PI estimate to 10dps = %.10f\n", n, 4 * sum);
 
     return (0);
 }

@@ -4,6 +4,7 @@
 // Where a 3byte Unicode point is represented, it would not make sense to sense to attempt to display is incomplete.
 
 // Great article : http://www.joelonsoftware.com/articles/Unicode.html
+// Reference : http://en.wikipedia.org/wiki/UTF-8#Description
 
 #include <stdio.h>
 
@@ -56,12 +57,14 @@ int main(int argc, char *argv[])
         0               // null terminator
     };
 
-    // 狐    72d0 0111 0010 1101 0000
-    // ࢢ    2210 0000 1000 1010 0010
-    // ࿕    0Fd5 0000 1111 1101 0101
-    // ?    07ff 0000 0111 1111 1111
+    // Other example unicode characters:
+    // 0x72d0 == 0111 0010 1101 0000 == 狐
+    // 0x2210 == 0000 1000 1010 0010 == ࢢ
+    // 0x0Fd5 == 0000 1111 1101 0101 == ࿕
+    // 0x07ff == 0000 0111 1111 1111 == ?
 
-    // char chinese[]= "࿕";
+    // As sublime text encodes source code string literals as UTF-8, the above is equivalent of the below:
+    // char chinese[] = "࿕";
     // char chinese[] = "ࠀ";
     // char chinese[] = "ࢢ";
     // char chinese[] = "ڱ";

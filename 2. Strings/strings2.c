@@ -1,5 +1,4 @@
 // 2. Done
-// Bonus Q. Again, gives an insight into how unicode is stored and displayed. Am guessing it is 3xbytes
 
 /*  Notes :
 Although ```char *ptr``` seems standard declaration format, I feel
@@ -10,8 +9,8 @@ Although ```char *ptr``` seems standard declaration format, I feel
 
 int main(int argc, char *argv[]){
 
-    // char greeting[] = "Hello, world!";
-    char greeting[] = "The quick brown 狐 jumped over the lazy 犬";
+    char greeting[] = "Hello, world!";
+    // char greeting[] = "The quick brown 狐 jumped over the lazy 犬";
     char* ptr = greeting;
     int index = 0;
 
