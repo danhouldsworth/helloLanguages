@@ -55,6 +55,8 @@ As I get into the more complex algorithms, I should also consider and comment on
 * Bindings to system calls / libc routines / or my own routines in other languages (While I'm sure this is straight forward - as read about it all the time - I've currently got no idea what it is...!)
 * Functional & unit tests (again - would love to get into this habbit, but currently have zero experience)
 * SuDoCo solver (mainly for Prologue)
+* Sorting
+* Monty Carlo approximation
 * Multi-core algorithms
 * Distributed algorithms & servers
 * Display - animation (which is simpler - a native visual api OR backend websocket feeding data to HTML front?)
