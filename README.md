@@ -71,3 +71,7 @@ Please feel free to :
 * Tackle any of the tasks in any language
 * Add suitable challenge tasks
 * Constructively critique existing solutions
+
+# OMG...
+I've just found [rosettacode](http://rosettacode.org/wiki/Hello_world/Web_server) which seems to have similar goals. It even organises by 'task' (of which is has 764!!!)
+Still, we've started so we will continue...... (albeit using rosetta if and when we get stuck)

@@ -1,5 +1,5 @@
 // Bonus. Done
-// With n=100bn (1e11) it solves PI to 10 dps in 6min30sec (compiled with -Ofast on 17"MBP)
+// With n=100bn (1e11), PI correct to 10 dps 3.1415926536 (in 6.5min compiled with -Ofast)
 
 #include <stdio.h>
 
