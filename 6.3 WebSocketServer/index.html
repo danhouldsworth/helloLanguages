@@ -16,6 +16,7 @@
   };
  
   function senddata() {
+     event.preventDefault();
      var data = document.getElementById('sendtext').value;
      serversocket.send(data);
      document.getElementById('comms').innerHTML += "Sent: " + data + "<br>";
@@ -25,9 +26,10 @@
  
 </head>
 <body>
-  <input id="sendtext" type="text" />
-  <input type="button" id="sendBtn" value="send" onclick="senddata()"></input>
- 
+  <form onsubmit="senddata()">
+    <input id="sendtext" type="text" />
+    <input type="submit" id="sendBtn" value="send"></input>
+  </form> 
   <div id='comms'></div>
  
 </body>
