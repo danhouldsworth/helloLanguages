@@ -3,34 +3,33 @@
 <meta charset="UTF-8" />
 <title>Basic Websocket</title>
 <script>
- 
+
   var serversocket = new WebSocket("ws://localhost:8080/ws");
- 
+
   serversocket.onopen = function() {
     serversocket.send("Connection init");
-  }
- 
-  // Write message on receive
+  };
+
   serversocket.onmessage = function(e) {
     document.getElementById('comms').innerHTML += "Received: " + e.data + "<br>";
   };
- 
+
   function senddata() {
      event.preventDefault();
      var data = document.getElementById('sendtext').value;
      serversocket.send(data);
      document.getElementById('comms').innerHTML += "Sent: " + data + "<br>";
   }
- 
+
 </script>
- 
+
 </head>
 <body>
   <form onsubmit="senddata()">
     <input id="sendtext" type="text" />
     <input type="submit" id="sendBtn" value="send"></input>
-  </form> 
+  </form>
   <div id='comms'></div>
- 
+
 </body>
 </html>
