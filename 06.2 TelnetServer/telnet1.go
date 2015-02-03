@@ -15,7 +15,7 @@ func main() {
 }
 
 func handleConnection(c net.Conn) {
-	welcome := []byte("\n\n --- Welcome to Telnet Echo & Double in Go! --- \n\n")
+	welcome := []byte("\n\n --- Welcome to Telnet Echo in Go! --- \n\n")
 	echo := []byte("Server echo service : ")
 
 	c.Write(welcome)

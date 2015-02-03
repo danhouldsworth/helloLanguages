@@ -1,5 +1,5 @@
 // 1. Done.
-// Note: This approach is generically scalable accept for making '@','_' and ':' special commands.
+// Note: This approach makes '@','_' and ':' special commands.
 
 #include <stdio.h>
 
