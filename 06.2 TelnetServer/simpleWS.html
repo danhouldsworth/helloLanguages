@@ -1,0 +1,7 @@
+<html><head></head><body></body><script>
+d = document
+s = new WebSocket("ws://127.0.0.1:8006/", "flt-protocol")
+s.onopen = function() {s.send("Hello, server!!"); d.write("<h2>Connected!</h2>")}
+s.onmessage = function(e) {d.write(e.data + "<br>")}
+d.body.onload = function() {d.write("<h1>Opening WebSocket.....</h1>")}
+</script></html>
