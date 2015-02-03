@@ -5,3 +5,7 @@
 3. Accept two client connections per room, providing a relay between the two.
 
 Bonus : Establish a message protocol of {'command', 'message'}, where command can either be sendToID, or sendToAll.
+
+** Notes :
+HTTP upgrade handshake : https://en.wikipedia.org/wiki/WebSocket#WebSocket_protocol_handshake
+WebSocket Frame Bytes  : http://stackoverflow.com/questions/8125507/how-can-i-send-and-receive-websocket-messages-on-the-server-side

@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	counter     = 0
-	connections map[*websocket.Conn]int
+	counter                             = 0
+	connections map[*websocket.Conn]int = make(map[*websocket.Conn]int)
 )
 
 func sendAll(senderID int, msg []byte) {
@@ -24,20 +24,20 @@ func sendAll(senderID int, msg []byte) {
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("*** New WebSocket Connection ***")
 	conn, _ := websocket.Upgrade(w, r, nil, 1024, 1024)
-	ID := counter
-	connections[conn] = ID
 	counter++
+	connections[conn] = counter
 
 	for {
 		_, msg, _ := conn.ReadMessage()
-		log.Printf("Recieved from Conn#%d : %s", ID, string(msg))
-		sendAll(ID, msg)
+		log.Printf("Recieved from Conn#%d : %s", counter, string(msg))
+		sendAll(counter, msg)
 	}
 }
 
 func main() {
-	connections = make(map[*websocket.Conn]int)
+	log.Println("*** Now listening for WebSockets on port 8080 ***")
 	http.HandleFunc("/ws", wsHandler)
 	http.ListenAndServe(":8080", nil)
 }
