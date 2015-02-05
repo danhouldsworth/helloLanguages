@@ -4,7 +4,7 @@
 <title>Basic Websocket</title>
 <script>
 
-  var serversocket = new WebSocket("ws://localhost:8080/ws");
+  var serversocket = new WebSocket("ws://localhost:8006/", "echo-protocol");
 
   serversocket.onopen = function() {
     serversocket.send("Connection init");
