@@ -2,9 +2,12 @@
 <head>
 <meta charset="UTF-8" />
 <title>Basic Websocket</title>
+<style type="text/css">
+body{background-image:url(https://immerselearning.com/wp-content/uploads/2013/12/4-environments.jpg);}
+</style>
 <script>
 
-  var serversocket = new WebSocket("ws://localhost:8006/", "echo-protocol");
+  var serversocket = new WebSocket("ws://178.62.109.106/");
 
   serversocket.onopen = function() {
     serversocket.send("Connection init");

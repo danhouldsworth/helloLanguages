@@ -71,6 +71,7 @@ Please feel free to :
 * Tackle any of the tasks in any language
 * Add suitable challenge tasks
 * Constructively critique existing solutions
+The folder structure may need to change to keep up, but don't let that inhibit the contribution of new challenges just drop them in ```10. Miscellaneous Teasers```, or a suffix to any related challenge.
 
 # OMG...
 I've just found [rosettacode](http://rosettacode.org/wiki/Hello_world/Web_server) which seems to have similar goals. It even organises by 'task' (of which is has 764!!!)
