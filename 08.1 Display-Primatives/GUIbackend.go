@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	tcpConn    net.Conn // Can be global as we don't intend to server multiple connections
-	screenSize = 1024   // If we stick to a power of 2, integer division is easier
+	tcpConn    net.Conn           // Can be global as we don't intend to server multiple connections
+	screenSize = 1024             // If we stick to a power of 2, integer division is easier
+	IP         = "127.0.0.1:8888" // Feel free to serve across Network / LAN
 )
 
 //
@@ -71,10 +72,6 @@ func performSomeGraphics() {
 	// --
 }
 
-//
-// --
-//
-
 func calcImage(i, j int) [8]byte {
 	x := ratio(i, screenSize/2) - 1
 	y := ratio(j, screenSize/2) - 1
@@ -99,6 +96,9 @@ func mapToArgand(x, y int) complex128 {
 	return min + complex(ratio(x, screenSize)*real(max-min), ratio(y, screenSize)*imag(max-min))
 }
 
+//
+// -- Useful functions Todo : Tidy up
+//
 func LoByte(i int) uint8 {
 	return uint8(i & 0xff)
 }
@@ -117,6 +117,10 @@ func ratio(a, b int) float64 {
 }
 
 //
+// --
+//
+
+//
 // -- Listen & serve the GUIdisplay
 //
 func hashWithMagicKey(clientKey string) string {
@@ -133,8 +137,8 @@ func readBytesOnWire() string {
 
 func main() {
 
-	fmt.Println("\nWaiting for Display.... Please navigate to 10.1.0.187:8888")
-	listener, _ := net.Listen("tcp", ":8888")
+	fmt.Println("\nWaiting for Display.... Please navigate to " + IP + " to commence.")
+	listener, _ := net.Listen("tcp", IP)
 	for {
 		tcpConn, _ = listener.Accept()
 		handleTCP() // Deliberatly blocking (Only want to do this once!!)
@@ -143,7 +147,7 @@ func main() {
 
 func handleTCP() {
 	wsUpgrade := "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nOrigin: null\r\nSec-WebSocket-Protocol: single-pixel-GUI-protocol\r\n"
-	guiDisplay := "<html><head><title>Screen over WebSockets</title><body></body><script>var canvas = document.createElement('CANVAS');canvas.width = canvas.height = " + strconv.Itoa(screenSize) + ";document.body.appendChild(canvas);var ctx = canvas.getContext('2d');var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);var offset = function(x,y) {return (y * canvas.width + x) * 4;};var plotPacket = new ArrayBuffer(6);var plotPacketData = new Uint8Array(plotPacket);var ws = new WebSocket('ws://10.1.0.187:8888/', 'single-pixel-GUI-protocol');ws.binaryType = 'arraybuffer';ws.onopen = function() {ws.send('GUI Ready');};ws.onmessage = function(e) {plotPacketData = new Uint8Array(e.data);var xHi = plotPacketData[0];var xLo = plotPacketData[1];var yHi = plotPacketData[2];var yLo = plotPacketData[3];var R = plotPacketData[4];var G = plotPacketData[5];var B = plotPacketData[6];var A = plotPacketData[7];var x = xHi * 256 + xLo;var y = yHi * 256 + yLo;imagedata.data[offset(x,y) + 0] = R;imagedata.data[offset(x,y) + 1] = G;imagedata.data[offset(x,y) + 2] = B;imagedata.data[offset(x,y) + 3] = A;};function refresh(){ctx.putImageData(imagedata,0,0);window.requestAnimationFrame(refresh);}window.requestAnimationFrame(refresh);</script></head></html>"
+	guiDisplay := "<html><head><title>Screen over WebSockets</title><body></body><script>var canvas = document.createElement('CANVAS');canvas.width = canvas.height = " + strconv.Itoa(screenSize) + ";document.body.appendChild(canvas);var ctx = canvas.getContext('2d');var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);var offset = function(x,y) {return (y * canvas.width + x) * 4;};var plotPacket = new ArrayBuffer(6);var plotPacketData = new Uint8Array(plotPacket);var ws = new WebSocket('ws://" + IP + "/', 'single-pixel-GUI-protocol');ws.binaryType = 'arraybuffer';ws.onopen = function() {ws.send('GUI Ready');};ws.onmessage = function(e) {plotPacketData = new Uint8Array(e.data);var xHi = plotPacketData[0];var xLo = plotPacketData[1];var yHi = plotPacketData[2];var yLo = plotPacketData[3];var R = plotPacketData[4];var G = plotPacketData[5];var B = plotPacketData[6];var A = plotPacketData[7];var x = xHi * 256 + xLo;var y = yHi * 256 + yLo;imagedata.data[offset(x,y) + 0] = R;imagedata.data[offset(x,y) + 1] = G;imagedata.data[offset(x,y) + 2] = B;imagedata.data[offset(x,y) + 3] = A;};function refresh(){ctx.putImageData(imagedata,0,0);window.requestAnimationFrame(refresh);}window.requestAnimationFrame(refresh);</script></head></html>"
 	var Upgrade, clientKey string
 
 	// -- Assume incoming HTTP GET request for WebSocket Upgrade on TCP connection. Parse Upgrade & Key if present
