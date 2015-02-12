@@ -3,6 +3,8 @@ package main
 import (
 	"crypto/sha1"
 	"fmt"
+	"math"
+	"math/rand"
 	"net"
 	"strconv"
 	"strings"
@@ -56,20 +58,93 @@ func performSomeGraphics() {
 	fmt.Printf("\nDone!\n")
 	// --
 
-	// --eg#3 Display a mandlebrot set
+	// --eg#3 Display a mandlebrot set spiraling in
 	fmt.Printf("\nMandlebrot set : %5.1f%%", 0.0)
-	for i := 0; i <= screenSize; i++ {
-		for j := 0; j <= screenSize; j++ {
-			fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(i*screenSize+j, screenSize*screenSize))
-			if isMandy(mapToArgand(i, j)) {
-				wsWrite([8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), 255, 255, 255, 255})
-			} else {
-				wsWrite([8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), 0, 0, 0, 255})
-			}
+	left, top := 0, 0
+	right, bottom := screenSize-2, screenSize-2
+	deltaX := 1
+	deltaY := 0
+	for i, j, counter := 0, 0, 0; counter <= screenSize*screenSize && top <= bottom && left <= right; i, j, counter = i+deltaX, j+deltaY, counter+1 {
+
+		fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(counter, screenSize*screenSize))
+		dwell := isMandy(mapToArgand(i, j))
+		wsWrite([8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), byte(dwell % 64), byte(dwell % 16), byte(dwell % 2), 255 - byte(dwell%256)})
+		if deltaX > 0 && i == right {
+			deltaX--
+			deltaY++
+			right--
+		} else if deltaY > 0 && j == bottom {
+			deltaX--
+			deltaY--
+			bottom--
+		} else if deltaX < 0 && i == left {
+			deltaX++
+			deltaY--
+			left++
+		} else if deltaY < 0 && j == top {
+			deltaX++
+			deltaY++
+			top++
 		}
 	}
 	fmt.Printf("\nDone!\n")
 	// --
+
+	// eg#4 3 bodies moving under gravity
+	type body struct {
+		mass         int
+		x, y, vx, vy float64
+		r, g, b      byte
+	}
+	numberBodies := 30
+	speed := 0.1
+	bodies := make([]body, numberBodies)
+	for i := 0; i < numberBodies; i++ {
+		bodies[i] = body{rand.Intn(255), float64(rand.Intn(screenSize)), float64(rand.Intn(screenSize)), speed*rand.Float64() - speed/2, speed*rand.Float64() - speed/2, byte(rand.Intn(255)), byte(rand.Intn(255)), byte(rand.Intn(255))}
+	}
+
+	for {
+		for i := 0; i < numberBodies; i++ {
+			for j := 0; j < numberBodies; j++ {
+				if i != j {
+					dx := bodies[i].x - bodies[j].x
+					dy := bodies[i].y - bodies[j].y
+					r2 := dx*dx + dy*dy
+					if r2 > 50 {
+						r := math.Sqrt(r2)
+						force := 0.01 * float64(bodies[i].mass*bodies[j].mass) / r2
+						bodies[i].vx -= (force / float64(bodies[i].mass)) * dx / r
+						bodies[j].vx += (force / float64(bodies[i].mass)) * dx / r
+						bodies[i].vy -= (force / float64(bodies[i].mass)) * dy / r
+						bodies[j].vy += (force / float64(bodies[i].mass)) * dy / r
+					}
+				}
+			}
+			// Move with velocity
+			bodies[i].x += bodies[i].vx
+			bodies[i].y += bodies[i].vy
+			// Drag
+			// bodies[i].vx -= 0.001 * bodies[i].vx * bodies[i].vx * bodies[i].vx
+			// bodies[i].vy -= 0.001 * bodies[i].vy * bodies[i].vy * bodies[i].vy
+			// Wrap boundaries
+			if bodies[i].x < 0 {
+				bodies[i].x += float64(screenSize)
+			}
+			if bodies[i].y < 0 {
+				bodies[i].y += float64(screenSize)
+			}
+			if bodies[i].x > float64(screenSize) {
+				bodies[i].x -= float64(screenSize)
+			}
+			if bodies[i].y > float64(screenSize) {
+				bodies[i].y -= float64(screenSize)
+			}
+
+			wsWrite([8]byte{HiByte(round(bodies[i].x)), LoByte(round(bodies[i].x)), HiByte(round(bodies[i].y)), LoByte(round(bodies[i].y)), bodies[i].r, bodies[i].g, bodies[i].b, byte(bodies[i].mass)})
+		}
+		time.Sleep(1 * time.Millisecond)
+		// fmt.Printf("Body1 x=%f, y=%f, vx=%f, vy=%f\n", bodies[0].x, bodies[0].y, bodies[0].vx, bodies[0].vy)
+	}
 }
 
 func calcImage(i, j int) [8]byte {
@@ -79,16 +154,16 @@ func calcImage(i, j int) [8]byte {
 	return [8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), uint8(255 * (1 - r)), uint8(128 + 128*x), uint8(128 + 128*y), 255}
 }
 
-func isMandy(c complex128) bool {
-	maxDwell := 1000
-	dwell := 0
+func isMandy(c complex128) (dwell int) {
+	maxDwell := 1 + 2<<16
+	dwell = 0
 	for z := c; real(z)*real(z)+imag(z)*imag(z) < 4; z = z*z + c {
 		dwell++
 		if dwell >= maxDwell {
-			return true
+			return
 		}
 	}
-	return false
+	return
 }
 
 func mapToArgand(x, y int) complex128 {
@@ -114,6 +189,14 @@ func wsWrite(plotPacket [8]byte) {
 
 func ratio(a, b int) float64 {
 	return float64(a) / float64(b)
+}
+func round(value float64) int {
+	if value < 0.0 {
+		value -= 0.5
+	} else {
+		value += 0.5
+	}
+	return int(value)
 }
 
 //

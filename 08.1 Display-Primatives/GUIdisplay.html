@@ -15,6 +15,7 @@
 
   // -- Initialise ArrayBuffers
   var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);
+  for (var i=0;i<4*canvas.height*canvas.width;i++){imagedata[i]=0;};
   var offset = function(x,y) {return (y * canvas.width + x) * 4;}
   var plotPacket = new ArrayBuffer(6);
   var plotPacketData = new Uint8Array(plotPacket);
