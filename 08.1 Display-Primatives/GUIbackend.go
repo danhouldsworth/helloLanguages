@@ -3,18 +3,20 @@ package main
 import (
 	"crypto/sha1"
 	"fmt"
-	"math"
-	"math/rand"
+	// "math"
+	// "math/rand"
 	"net"
+	"runtime"
 	"strconv"
 	"strings"
-	"time"
+	// "time"
 )
 
 var (
 	tcpConn    net.Conn           // Can be global as we don't intend to server multiple connections
 	screenSize = 1024             // If we stick to a power of 2, integer division is easier
 	IP         = "127.0.0.1:8888" // Feel free to serve across Network / LAN
+	cores      = 0
 )
 
 //
@@ -22,131 +24,156 @@ var (
 //
 func performSomeGraphics() {
 
-	// eg#1 Move small 50px lines across the screen in a time controlled fashion
-	fmt.Printf("\nMoving line : %5.1f%%", 0.0)
-	for line := 1; line < screenSize; line++ {
-		fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(line, screenSize))
-		for j := screenSize>>1 - screenSize>>5; j < screenSize>>1+screenSize>>5; j++ {
-			wsWrite([8]byte{HiByte(line - 1), LoByte(line - 1), HiByte(j), LoByte(j), 255, 255, 255, 255})
-			wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(line - 1), LoByte(line - 1), 255, 255, 255, 255})
-			wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(screenSize - line + 1), LoByte(screenSize - line + 1), 255, 255, 255, 255})
-			wsWrite([8]byte{HiByte(screenSize - line + 1), LoByte(screenSize - line + 1), HiByte(j), LoByte(j), 255, 255, 255, 255})
-		}
-		for j := screenSize>>1 - screenSize>>5; j < screenSize>>1+screenSize>>5; j++ {
-			wsWrite([8]byte{HiByte(line), LoByte(line), HiByte(j), LoByte(j), 255, 0, 0, 255})
-			wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(line), LoByte(line), 0, 255, 0, 255})
-			wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(screenSize - line), LoByte(screenSize - line), 0, 0, 255, 255})
-			wsWrite([8]byte{HiByte(screenSize - line), LoByte(screenSize - line), HiByte(j), LoByte(j), 0, 0, 0, 255})
-		}
-		time.Sleep(25 * time.Millisecond)
-	}
-	fmt.Printf("\nDone!\n")
-	// --
+	// // eg#1 Move small 50px lines across the screen in a time controlled fashion
+	// fmt.Printf("\nMoving line : %5.1f%%", 0.0)
+	// for line := 1; line < screenSize; line++ {
+	// 	fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(line, screenSize))
+	// 	for j := screenSize>>1 - screenSize>>5; j < screenSize>>1+screenSize>>5; j++ {
+	// 		wsWrite([8]byte{HiByte(line - 1), LoByte(line - 1), HiByte(j), LoByte(j), 255, 255, 255, 255})
+	// 		wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(line - 1), LoByte(line - 1), 255, 255, 255, 255})
+	// 		wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(screenSize - line + 1), LoByte(screenSize - line + 1), 255, 255, 255, 255})
+	// 		wsWrite([8]byte{HiByte(screenSize - line + 1), LoByte(screenSize - line + 1), HiByte(j), LoByte(j), 255, 255, 255, 255})
+	// 	}
+	// 	for j := screenSize>>1 - screenSize>>5; j < screenSize>>1+screenSize>>5; j++ {
+	// 		wsWrite([8]byte{HiByte(line), LoByte(line), HiByte(j), LoByte(j), 255, 0, 0, 255})
+	// 		wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(line), LoByte(line), 0, 255, 0, 255})
+	// 		wsWrite([8]byte{HiByte(j), LoByte(j), HiByte(screenSize - line), LoByte(screenSize - line), 0, 0, 255, 255})
+	// 		wsWrite([8]byte{HiByte(screenSize - line), LoByte(screenSize - line), HiByte(j), LoByte(j), 0, 0, 0, 255})
+	// 	}
+	// 	time.Sleep(25 * time.Millisecond)
+	// }
+	// fmt.Printf("\nDone!\n")
+	// // --
 
-	// -- eg#2 Build a custom rastor of a calculated image
-	fmt.Printf("\nMath image : %5.1f%%", 0.0)
-	offsetX := [16]int{0, 2, 2, 0, 3, 0, 1, 2, 1, 1, 0, 2, 3, 3, 3, 1}
-	offsetY := [16]int{0, 2, 0, 2, 1, 1, 1, 1, 3, 2, 3, 3, 0, 2, 3, 0}
-	for m := 0; m <= 15; m++ {
-		for i := 0; i <= screenSize; i = i + 4 {
-			for j := 0; j <= screenSize; j = j + 4 {
-				fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(m*screenSize*screenSize+i*screenSize+j, 16*screenSize*screenSize))
-				wsWrite(calcImage(i+offsetX[m], j+offsetY[m]))
-			}
-		}
-	}
-	fmt.Printf("\nDone!\n")
-	// --
+	// // -- eg#2 Build a custom rastor of a calculated image
+	// fmt.Printf("\nMath image : %5.1f%%", 0.0)
+	// offsetX := [16]int{0, 2, 2, 0, 3, 0, 1, 2, 1, 1, 0, 2, 3, 3, 3, 1}
+	// offsetY := [16]int{0, 2, 0, 2, 1, 1, 1, 1, 3, 2, 3, 3, 0, 2, 3, 0}
+	// for m := 0; m <= 15; m++ {
+	// 	for i := 0; i <= screenSize; i = i + 4 {
+	// 		for j := 0; j <= screenSize; j = j + 4 {
+	// 			fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(m*screenSize*screenSize+i*screenSize+j, 16*screenSize*screenSize))
+	// 			wsWrite(calcImage(i+offsetX[m], j+offsetY[m]))
+	// 		}
+	// 	}
+	// }
+	// fmt.Printf("\nDone!\n")
+	// // --
 
 	// --eg#3 Display a mandlebrot set spiraling in
 	fmt.Printf("\nMandlebrot set : %5.1f%%", 0.0)
 	left, top := 0, 0
-	right, bottom := screenSize-2, screenSize-2
+	right, bottom := screenSize-1, screenSize-1
+	mandy(left, right, top, bottom)
+	fmt.Printf("\nDone!\n")
+	// --
+
+	// // eg#4 3 bodies moving under gravity
+	// type body struct {
+	// 	mass         int
+	// 	x, y, vx, vy float64
+	// 	r, g, b      byte
+	// }
+	// numberBodies := 30
+	// speed := 0.1
+	// bodies := make([]body, numberBodies)
+	// for i := 0; i < numberBodies; i++ {
+	// 	bodies[i] = body{rand.Intn(255), float64(rand.Intn(screenSize)), float64(rand.Intn(screenSize)), speed*rand.Float64() - speed/2, speed*rand.Float64() - speed/2, byte(rand.Intn(255)), byte(rand.Intn(255)), byte(rand.Intn(255))}
+	// }
+
+	// for {
+	// 	for i := 0; i < numberBodies; i++ {
+	// 		for j := 0; j < numberBodies; j++ {
+	// 			if i != j {
+	// 				dx := bodies[i].x - bodies[j].x
+	// 				dy := bodies[i].y - bodies[j].y
+	// 				r2 := dx*dx + dy*dy
+	// 				if r2 > 50 {
+	// 					r := math.Sqrt(r2)
+	// 					force := 0.01 * float64(bodies[i].mass*bodies[j].mass) / r2
+	// 					bodies[i].vx -= (force / float64(bodies[i].mass)) * dx / r
+	// 					bodies[j].vx += (force / float64(bodies[i].mass)) * dx / r
+	// 					bodies[i].vy -= (force / float64(bodies[i].mass)) * dy / r
+	// 					bodies[j].vy += (force / float64(bodies[i].mass)) * dy / r
+	// 				}
+	// 			}
+	// 		}
+	// 		// Move with velocity
+	// 		bodies[i].x += bodies[i].vx
+	// 		bodies[i].y += bodies[i].vy
+	// 		// Drag
+	// 		// bodies[i].vx -= 0.001 * bodies[i].vx * bodies[i].vx * bodies[i].vx
+	// 		// bodies[i].vy -= 0.001 * bodies[i].vy * bodies[i].vy * bodies[i].vy
+	// 		// Wrap boundaries
+	// 		if bodies[i].x < 0 {
+	// 			bodies[i].x += float64(screenSize)
+	// 		}
+	// 		if bodies[i].y < 0 {
+	// 			bodies[i].y += float64(screenSize)
+	// 		}
+	// 		if bodies[i].x > float64(screenSize) {
+	// 			bodies[i].x -= float64(screenSize)
+	// 		}
+	// 		if bodies[i].y > float64(screenSize) {
+	// 			bodies[i].y -= float64(screenSize)
+	// 		}
+
+	// 		wsWrite([8]byte{HiByte(round(bodies[i].x)), LoByte(round(bodies[i].x)), HiByte(round(bodies[i].y)), LoByte(round(bodies[i].y)), bodies[i].r, bodies[i].g, bodies[i].b, byte(bodies[i].mass)})
+	// 	}
+	// 	time.Sleep(1 * time.Millisecond)
+	// 	// fmt.Printf("Body1 x=%f, y=%f, vx=%f, vy=%f\n", bodies[0].x, bodies[0].y, bodies[0].vx, bodies[0].vy)
+	// }
+	// --
+}
+
+func mandy(left, right, top, bottom int) {
+	// cores++
 	deltaX := 1
 	deltaY := 0
-	for i, j, counter := 0, 0, 0; counter <= screenSize*screenSize && top <= bottom && left <= right; i, j, counter = i+deltaX, j+deltaY, counter+1 {
+	sameColour := true
+	firstCol := isMandy(mapToArgand(left, top)) // This wastes a pixel calc
 
-		fmt.Printf("\b\b\b\b\b\b%5.1f%%", 100*ratio(counter, screenSize*screenSize))
+	for i, j, counter := left, top, 0; counter < 4; i, j = i+deltaX, j+deltaY {
 		dwell := isMandy(mapToArgand(i, j))
+		if dwell != firstCol {
+			sameColour = false
+		}
 		wsWrite([8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), byte(dwell % 64), byte(dwell % 16), byte(dwell % 2), 255 - byte(dwell%256)})
 		if deltaX > 0 && i == right {
+			counter++
 			deltaX--
 			deltaY++
 			right--
 		} else if deltaY > 0 && j == bottom {
+			counter++
 			deltaX--
 			deltaY--
 			bottom--
 		} else if deltaX < 0 && i == left {
+			counter++
 			deltaX++
 			deltaY--
 			left++
 		} else if deltaY < 0 && j == top {
+			counter++
 			deltaX++
 			deltaY++
 			top++
 		}
+		// time.Sleep(2 * time.Millisecond)
 	}
-	fmt.Printf("\nDone!\n")
-	// --
-
-	// eg#4 3 bodies moving under gravity
-	type body struct {
-		mass         int
-		x, y, vx, vy float64
-		r, g, b      byte
-	}
-	numberBodies := 30
-	speed := 0.1
-	bodies := make([]body, numberBodies)
-	for i := 0; i < numberBodies; i++ {
-		bodies[i] = body{rand.Intn(255), float64(rand.Intn(screenSize)), float64(rand.Intn(screenSize)), speed*rand.Float64() - speed/2, speed*rand.Float64() - speed/2, byte(rand.Intn(255)), byte(rand.Intn(255)), byte(rand.Intn(255))}
-	}
-
-	for {
-		for i := 0; i < numberBodies; i++ {
-			for j := 0; j < numberBodies; j++ {
-				if i != j {
-					dx := bodies[i].x - bodies[j].x
-					dy := bodies[i].y - bodies[j].y
-					r2 := dx*dx + dy*dy
-					if r2 > 50 {
-						r := math.Sqrt(r2)
-						force := 0.01 * float64(bodies[i].mass*bodies[j].mass) / r2
-						bodies[i].vx -= (force / float64(bodies[i].mass)) * dx / r
-						bodies[j].vx += (force / float64(bodies[i].mass)) * dx / r
-						bodies[i].vy -= (force / float64(bodies[i].mass)) * dy / r
-						bodies[j].vy += (force / float64(bodies[i].mass)) * dy / r
-					}
-				}
-			}
-			// Move with velocity
-			bodies[i].x += bodies[i].vx
-			bodies[i].y += bodies[i].vy
-			// Drag
-			// bodies[i].vx -= 0.001 * bodies[i].vx * bodies[i].vx * bodies[i].vx
-			// bodies[i].vy -= 0.001 * bodies[i].vy * bodies[i].vy * bodies[i].vy
-			// Wrap boundaries
-			if bodies[i].x < 0 {
-				bodies[i].x += float64(screenSize)
-			}
-			if bodies[i].y < 0 {
-				bodies[i].y += float64(screenSize)
-			}
-			if bodies[i].x > float64(screenSize) {
-				bodies[i].x -= float64(screenSize)
-			}
-			if bodies[i].y > float64(screenSize) {
-				bodies[i].y -= float64(screenSize)
-			}
-
-			wsWrite([8]byte{HiByte(round(bodies[i].x)), LoByte(round(bodies[i].x)), HiByte(round(bodies[i].y)), LoByte(round(bodies[i].y)), bodies[i].r, bodies[i].g, bodies[i].b, byte(bodies[i].mass)})
-		}
-		time.Sleep(1 * time.Millisecond)
-		// fmt.Printf("Body1 x=%f, y=%f, vx=%f, vy=%f\n", bodies[0].x, bodies[0].y, bodies[0].vx, bodies[0].vy)
+	cores--
+	if sameColour == true {
+		//plot full block & break
+	} else if top < bottom && left < right && cores < 128 {
+		midleft := left + (right-left)/2
+		midtop := top + (bottom-top)/2
+		go mandy(left, midleft, top, midtop)         // TL
+		go mandy(left, midleft, midtop+1, bottom)    // BL
+		go mandy(1+midleft, right, midtop+1, bottom) // BR
+		go mandy(1+midleft, right, top, midtop)      // TR
 	}
 }
-
 func calcImage(i, j int) [8]byte {
 	x := ratio(i, screenSize/2) - 1
 	y := ratio(j, screenSize/2) - 1
@@ -219,6 +246,11 @@ func readBytesOnWire() string {
 }
 
 func main() {
+	// -- Set & Announce multicore
+	cpu := runtime.NumCPU()
+	runtime.GOMAXPROCS(cpu)
+	fmt.Printf("\nThere are %d CPU cores available. Allocating %d CPU cores for our purposes...\n", cpu, runtime.GOMAXPROCS(-1))
+	// --
 
 	fmt.Println("\nWaiting for Display.... Please navigate to " + IP + " to commence.")
 	listener, _ := net.Listen("tcp", IP)
@@ -252,9 +284,9 @@ func handleTCP() {
 		acceptKey := hashWithMagicKey(clientKey)
 		tcpConn.Write([]byte(wsUpgrade + acceptKey + "\r\n\r\n"))
 		fmt.Println("*** GUIdisplay Opened WebSocket ***")
-		for {
-			performSomeGraphics() // Deliberatly blocking (Only want to do this once!!)
-		}
+		// for {
+		performSomeGraphics() // Deliberatly blocking (Only want to do this once!!)
+		// }
 	}
 	//---
 }

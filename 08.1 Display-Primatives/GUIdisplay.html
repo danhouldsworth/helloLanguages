@@ -15,7 +15,6 @@
 
   // -- Initialise ArrayBuffers
   var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);
-  for (var i=0;i<4*canvas.height*canvas.width;i++){imagedata[i]=0;};
   var offset = function(x,y) {return (y * canvas.width + x) * 4;}
   var plotPacket = new ArrayBuffer(6);
   var plotPacketData = new Uint8Array(plotPacket);
@@ -56,8 +55,3 @@
 
 </head>
 </html>
-
-<!--
-<html><head><title>Screen over WebSockets</title><body></body><script>var canvas = document.createElement("CANVAS");canvas.width = canvas.height = 1000;document.body.appendChild(canvas);var ctx = canvas.getContext('2d');var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);var offset = function(x,y) {return (y * canvas.width + x) * 4;};var plotPacket = new ArrayBuffer(6);var plotPacketData = new Uint8Array(plotPacket);var ws = new WebSocket("ws://127.0.0.1:8888/", "single-pixel-GUI-protocol");ws.binaryType = 'arraybuffer';ws.onopen = function() {ws.send("GUI Ready");};ws.onmessage = function(e) {plotPacketData = new Uint8Array(e.data);var xHi = plotPacketData[0];var xLo = plotPacketData[1];var yHi = plotPacketData[2];var yLo = plotPacketData[3];var R = plotPacketData[4];var G = plotPacketData[5];var B = plotPacketData[6];var A = plotPacketData[7];var x = xHi * 256 + xLo;var y = yHi * 256 + yLo;imagedata.data[offset(x,y) + 0] = R;imagedata.data[offset(x,y) + 1] = G;imagedata.data[offset(x,y) + 2] = B;imagedata.data[offset(x,y) + 3] = A;};function refresh(){ctx.putImageData(imagedata,0,0);window.requestAnimationFrame(refresh);}window.requestAnimationFrame(refresh);</script></head></html>
-
->

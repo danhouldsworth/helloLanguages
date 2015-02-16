@@ -1,0 +1,18 @@
+<html><head><body></body><script>
+c=document.createElement("CANVAS");
+c.width=c.height=512;
+document.body.appendChild(c);
+ctx=c.getContext('2d');
+i=ctx.getImageData(0,0,c.width,c.height);
+o=function(x,y){return(y*c.width+x)*4;}
+p=new ArrayBuffer(6);
+pD=new Uint8Array(p);
+ws=new WebSocket("ws://178.62.109.106:8889/","single-pixel-GUI-protocol");
+ws.binaryType='arraybuffer';
+ws.onmessage=function(e){pD=new Uint8Array(e.data);xHi=pD[0];xLo=pD[1];yHi=pD[2];yLo=pD[3];R=pD[4];G=pD[5];B=pD[6];A=pD[7];x=xHi*256+xLo;y=yHi*256+yLo;i.data[o(x,y)+0]=R;i.data[o(x,y)+1]=G;i.data[o(x,y)+2]=B;i.data[o(x,y)+3]=A;};
+r=function(){
+ctx.putImageData(i,0,0);
+window.requestAnimationFrame(r);
+};
+window.requestAnimationFrame(r);
+</script></head></html>
