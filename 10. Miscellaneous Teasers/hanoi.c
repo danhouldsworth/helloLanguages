@@ -1,23 +1,19 @@
 #include <stdio.h>
 
-#define Source 1
-#define Middle 2
-#define Target 3
-
 int n = 10;
 int count = 1;
 
-void solve(int n, int src, int mdl, int tgt){
+void solve(int n, int source, int middle, int target){
     if (n == 1){
-        printf("Step %d : Move a ring from tower %d to %d\n", count++, src, tgt);
+        printf("Step %d : Move a ring from tower %d to %d\n", count++, source, target);
     } else {
-        solve(n-1, src, tgt, mdl);
-        solve(1, src, mdl, tgt);
-        solve(n-1, mdl, src, tgt);
+        solve(n-1, source, target, middle);
+        solve(1, source, middle, target);
+        solve(n-1, middle, source, target);
     }
 }
 
 void main(){
-    solve(n, Source, Middle, Target);
+    solve(n, 1, 2, 3);
 }
 
