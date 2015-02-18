@@ -13,10 +13,11 @@ import (
 )
 
 var (
-	tcpConn    net.Conn           // Can be global as we don't intend to server multiple connections
-	screenSize = 1024             // If we stick to a power of 2, integer division is easier
-	IP         = "127.0.0.1:8888" // Feel free to serve across Network / LAN
-	cores      = 0
+	tcpConn    net.Conn      // Can be global as we don't intend to server multiple connections
+	screenSize = 1024        // If we stick to a power of 2, integer division is easier
+	IP         = "127.0.0.1" // Feel free to serve across Network / LAN
+	PORT       = "8888"
+	// cores      = 0
 )
 
 //
@@ -61,11 +62,9 @@ func performSomeGraphics() {
 	// // --
 
 	// --eg#3 Display a mandlebrot set spiraling in
-	fmt.Printf("\nMandlebrot set : %5.1f%%", 0.0)
 	left, top := 0, 0
 	right, bottom := screenSize-1, screenSize-1
-	mandy(left, right, top, bottom)
-	fmt.Printf("\nDone!\n")
+	go mandy(left, right, top, bottom)
 	// --
 
 	// // eg#4 3 bodies moving under gravity
@@ -127,51 +126,48 @@ func performSomeGraphics() {
 }
 
 func mandy(left, right, top, bottom int) {
-	// cores++
 	deltaX := 1
 	deltaY := 0
-	sameColour := true
-	firstCol := isMandy(mapToArgand(left, top)) // This wastes a pixel calc
+	colourBlock := true
+	firstColour := isMandy(mapToArgand(left, top)) // This wastes a pixel calc
 
-	for i, j, counter := left, top, 0; counter < 4; i, j = i+deltaX, j+deltaY {
+	for i, j, edge := left, top, 0; edge < 4; i, j = i+deltaX, j+deltaY {
 		dwell := isMandy(mapToArgand(i, j))
-		if dwell != firstCol {
-			sameColour = false
+		if colourBlock == true && dwell != firstColour {
+			colourBlock = false
+			// Initiate recurcise split immediately in case of idle CPUs
+			if top < bottom-2 && left < right-2 {
+				midleft := left + (right-left)/2
+				midtop := top + (bottom-top)/2
+				go mandy(left+1, midleft, top+1, midtop)         // TL
+				go mandy(left+1, midleft, midtop+1, bottom-1)    // BL
+				go mandy(1+midleft, right-1, midtop+1, bottom-1) // BR
+				go mandy(1+midleft, right-1, top+1, midtop)      // TR
+			}
+
 		}
+		// wsWrite([8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), 255 * byte(dwell%2), 255 * byte(dwell%2), 255 * byte(dwell%2), 255})
 		wsWrite([8]byte{HiByte(i), LoByte(i), HiByte(j), LoByte(j), byte(dwell % 64), byte(dwell % 16), byte(dwell % 2), 255 - byte(dwell%256)})
 		if deltaX > 0 && i == right {
-			counter++
+			edge++
 			deltaX--
 			deltaY++
-			right--
 		} else if deltaY > 0 && j == bottom {
-			counter++
+			edge++
 			deltaX--
 			deltaY--
-			bottom--
 		} else if deltaX < 0 && i == left {
-			counter++
+			edge++
 			deltaX++
 			deltaY--
-			left++
 		} else if deltaY < 0 && j == top {
-			counter++
+			edge++
 			deltaX++
 			deltaY++
-			top++
 		}
-		// time.Sleep(2 * time.Millisecond)
 	}
-	cores--
-	if sameColour == true {
-		//plot full block & break
-	} else if top < bottom && left < right && cores < 128 {
-		midleft := left + (right-left)/2
-		midtop := top + (bottom-top)/2
-		go mandy(left, midleft, top, midtop)         // TL
-		go mandy(left, midleft, midtop+1, bottom)    // BL
-		go mandy(1+midleft, right, midtop+1, bottom) // BR
-		go mandy(1+midleft, right, top, midtop)      // TR
+	if colourBlock == true {
+		//plot full block & break in firstColour
 	}
 }
 func calcImage(i, j int) [8]byte {
@@ -182,7 +178,7 @@ func calcImage(i, j int) [8]byte {
 }
 
 func isMandy(c complex128) (dwell int) {
-	maxDwell := 1 + 2<<16
+	maxDwell := 2 << 20
 	dwell = 0
 	for z := c; real(z)*real(z)+imag(z)*imag(z) < 4; z = z*z + c {
 		dwell++
@@ -252,8 +248,8 @@ func main() {
 	fmt.Printf("\nThere are %d CPU cores available. Allocating %d CPU cores for our purposes...\n", cpu, runtime.GOMAXPROCS(-1))
 	// --
 
-	fmt.Println("\nWaiting for Display.... Please navigate to " + IP + " to commence.")
-	listener, _ := net.Listen("tcp", IP)
+	fmt.Println("\nWaiting for Display.... Please navigate to " + IP + ":" + PORT + " to commence.")
+	listener, _ := net.Listen("tcp", ":"+PORT)
 	for {
 		tcpConn, _ = listener.Accept()
 		handleTCP() // Deliberatly blocking (Only want to do this once!!)
@@ -262,7 +258,7 @@ func main() {
 
 func handleTCP() {
 	wsUpgrade := "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nOrigin: null\r\nSec-WebSocket-Protocol: single-pixel-GUI-protocol\r\n"
-	guiDisplay := "<html><head><title>Screen over WebSockets</title><body></body><script>var canvas = document.createElement('CANVAS');canvas.width = canvas.height = " + strconv.Itoa(screenSize) + ";document.body.appendChild(canvas);var ctx = canvas.getContext('2d');var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);var offset = function(x,y) {return (y * canvas.width + x) * 4;};var plotPacket = new ArrayBuffer(6);var plotPacketData = new Uint8Array(plotPacket);var ws = new WebSocket('ws://" + IP + "/', 'single-pixel-GUI-protocol');ws.binaryType = 'arraybuffer';ws.onopen = function() {ws.send('GUI Ready');};ws.onmessage = function(e) {plotPacketData = new Uint8Array(e.data);var xHi = plotPacketData[0];var xLo = plotPacketData[1];var yHi = plotPacketData[2];var yLo = plotPacketData[3];var R = plotPacketData[4];var G = plotPacketData[5];var B = plotPacketData[6];var A = plotPacketData[7];var x = xHi * 256 + xLo;var y = yHi * 256 + yLo;imagedata.data[offset(x,y) + 0] = R;imagedata.data[offset(x,y) + 1] = G;imagedata.data[offset(x,y) + 2] = B;imagedata.data[offset(x,y) + 3] = A;};function refresh(){ctx.putImageData(imagedata,0,0);window.requestAnimationFrame(refresh);}window.requestAnimationFrame(refresh);</script></head></html>"
+	guiDisplay := "<html><head><title>Screen over WebSockets</title><body></body><script>var canvas = document.createElement('CANVAS');canvas.width = canvas.height = " + strconv.Itoa(screenSize) + ";document.body.appendChild(canvas);var ctx = canvas.getContext('2d');var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);var offset = function(x,y) {return (y * canvas.width + x) * 4;};var plotPacket = new ArrayBuffer(6);var plotPacketData = new Uint8Array(plotPacket);var ws = new WebSocket('ws://" + IP + ":" + PORT + "/', 'single-pixel-GUI-protocol');ws.binaryType = 'arraybuffer';ws.onopen = function() {ws.send('GUI Ready');};ws.onmessage = function(e) {plotPacketData = new Uint8Array(e.data);var xHi = plotPacketData[0];var xLo = plotPacketData[1];var yHi = plotPacketData[2];var yLo = plotPacketData[3];var R = plotPacketData[4];var G = plotPacketData[5];var B = plotPacketData[6];var A = plotPacketData[7];var x = xHi * 256 + xLo;var y = yHi * 256 + yLo;imagedata.data[offset(x,y) + 0] = R;imagedata.data[offset(x,y) + 1] = G;imagedata.data[offset(x,y) + 2] = B;imagedata.data[offset(x,y) + 3] = A;};function refresh(){ctx.putImageData(imagedata,0,0);window.requestAnimationFrame(refresh);}window.requestAnimationFrame(refresh);</script></head></html>"
 	var Upgrade, clientKey string
 
 	// -- Assume incoming HTTP GET request for WebSocket Upgrade on TCP connection. Parse Upgrade & Key if present
