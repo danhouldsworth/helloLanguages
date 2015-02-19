@@ -8,7 +8,7 @@
 
   // -- Create Canvas
   var canvas = document.createElement("CANVAS");
-  canvas.width = canvas.height = 1000;
+  canvas.width = canvas.height = GUI_SCREEN_SIZE;
   document.body.appendChild(canvas);
   var ctx = canvas.getContext('2d');
   // --
@@ -21,7 +21,7 @@
   // --
 
   // -- Establish WebSocket
-  var ws = new WebSocket("ws://127.0.0.1:8888/", "single-pixel-GUI-protocol");
+  var ws = new WebSocket("ws://GUI_IP/", "single-pixel-GUI-protocol");
   ws.binaryType = 'arraybuffer';
   ws.onopen = function() {ws.send("GUI Ready");};
   ws.onmessage = function(e) {
