@@ -62,7 +62,7 @@ func mandy(left, right, top, bottom int) {
 		}
 	}
 	if colourBlock == true {
-		//plot full block & break in firstColour
+		gui.FillRect(left, top, right, bottom, byte(firstColour%64), byte(firstColour%16), byte(firstColour%2), 255-byte(firstColour%256))
 	}
 }
 
