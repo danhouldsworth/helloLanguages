@@ -5,6 +5,9 @@
 3. Extend the supported numbers to include 'pi' and 'e'
 
 Notes:
-22-((5+2)*3) = 1					==>>        '22 5 2 + 3 * -'
-1/(Sin(Pi/4))^2 = 2					==>>        'Pi 4 / sin 2 ^ 1 swap /'
-1/((Sin(Pi/6)/Cos(Pi/6))^2) = 3		==>> 		'Pi 6 / dup sin swap cos / 2 ^ 1 swap /'
+
+		22-((5+2)*3) = 1					==>>        '22 5 2 + 3 * -'
+		1/(Sin(Pi/4))^2 = 2					==>>        'Pi 4 / sin 2 ^ 1 swap /'
+		1/((Sin(Pi/6)/Cos(Pi/6))^2) = 3		==>> 		'Pi 6 / dup sin swap cos / 2 ^ 1 swap /'
+
+
