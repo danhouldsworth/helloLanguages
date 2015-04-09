@@ -2,7 +2,7 @@
 
 1. Make an RPNsolver that takes a string of numbers and operators(+,-,/,*) and outputs the result.
 2. Extend the supported numbers to include floats, 'pi' and 'e'
-3. Extend the supported operators with 'sum', 'log', '^', 'sin', 'cos', '!'
+3. Extend the supported operators with 'sum', 'ln', '^', 'sin', 'cos', '!'
 4. Add stack operators 'push', '<>', '>>', '<<'
 
 
