@@ -8,7 +8,7 @@
 
 Solve these examples to verify equivalence: (Answer === Algerbraic === RPN)
 
-        1 === 5 / ( 4 + ( 3 - ( 2 * 1 ) ) )                             === '5 4 3 2 1 / + - *'
+        1 === 5 / ( 4 + ( 3 - ( 2 * 1 ) ) )                             === '5 4 3 2 1 * - + /'
         2 === ( ( Sin( Pi / 4 ) ) ^ 2 ) * 4                             === 'pi 4 / sin 2 ^ 4 *'
         3 === 1 / ( ( Sin( Pi / Fact(3) ) / Cos( Pi / Fact(3) ) ) ^ 2 ) === '1 pi 3 ! / push sin <> cos / 2 ^ /'
         4 ===
