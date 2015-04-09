@@ -14,3 +14,5 @@ Solve these examples to verify equivalence: (Answer === Algerbraic === RPN)
         4 ===
         0 - ( Sin( 1 * Pi / ( 1 + 1 ) ) + ( 1 + 1 ) * Cos( ( 1 + 1 ) * Pi / ( 1 + 1 ) ) + ( 1 + 1 + 1 ) * Sin( ( 1 + 1 + 1 ) * Pi / ( 1 + 1 ) ) + ( 1 + 1 + 1 + 1 ) * Cos( ( 1 + 1 + 1 + 1 ) * Pi / ( 1 + 1 ) ) )
         'pi 1 1 + / push push push sin >> 1 1 + push * cos * >> 1 1 1 + + push * sin * >> 1 1 1 1 + + + push * cos * sum 0 <> -'
+
+Admittedly, the fourth one is somewhat contrived....
