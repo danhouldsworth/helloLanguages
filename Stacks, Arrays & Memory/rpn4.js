@@ -60,6 +60,9 @@ while (rpnCommands.length > 0){
             case 'push':
                 result = push(s1); // Put s1 back on stack as if not taken, and set as new result to be pushed
                 break;
+            case 'pop':
+                result = pull(); // Put s1 back on stack as if not taken, and set as new result to be pushed
+                break;
             case '<>': // Swap
                 result = pull();
                 push(s1);
