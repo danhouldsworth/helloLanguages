@@ -17,56 +17,56 @@ int main(int argc, char *argv[])
     Byte 3 : 0xxx xxxx (1 byte Unicode mapping to U+0000-U+007F aka ASCII)
     Byte 4 : null terminator
     */
-    char chinese[] = {
-        1 * 128 +\
-        1 * 64  +\
-        1 * 32  +\
-        0 * 16  +\
-        0 * 8   +\
-        1 * 4   +\
-        1 * 2   +\
-        1 * 1,   \
-                \
-        1 * 128 +\
-        0 * 64  +\
-        0 * 32  +\
-        0 * 16  +\
-        1 * 8   +\
-        0 * 4   +\
-        1 * 2   +\
-        1 * 1,   \
-                \
-        1 * 128 +\
-        0 * 64  +\
-        0 * 32  +\
-        1 * 16  +\
-        0 * 8   +\
-        0 * 4   +\
-        0 * 2   +\
-        0 * 1,   \
-                \
-        0 * 128 +\
-        0 * 64  +\
-        1 * 32  +\
-        0 * 16  +\
-        0 * 8   +\
-        0 * 4   +\
-        0 * 2   +\
-        1 * 1,   \
+    // char chinese[] = {
+    //     1 * 128 +\
+    //     1 * 64  +\
+    //     1 * 32  +\
+    //     0 * 16  +\
+    //     0 * 8   +\
+    //     1 * 4   +\
+    //     1 * 2   +\
+    //     1 * 1,   \
+    //             \
+    //     1 * 128 +\
+    //     0 * 64  +\
+    //     0 * 32  +\
+    //     0 * 16  +\
+    //     1 * 8   +\
+    //     0 * 4   +\
+    //     1 * 2   +\
+    //     1 * 1,   \
+    //             \
+    //     1 * 128 +\
+    //     0 * 64  +\
+    //     0 * 32  +\
+    //     1 * 16  +\
+    //     0 * 8   +\
+    //     0 * 4   +\
+    //     0 * 2   +\
+    //     0 * 1,   \
+    //             \
+    //     0 * 128 +\
+    //     0 * 64  +\
+    //     1 * 32  +\
+    //     0 * 16  +\
+    //     0 * 8   +\
+    //     0 * 4   +\
+    //     0 * 2   +\
+    //     1 * 1,   \
 
-        0               // null terminator
-    };
+    //     0               // null terminator
+    // };
 
-    // Other example unicode characters:
-    // 0x72d0 == 0111 0010 1101 0000 == 狐
-    // 0x2210 == 0000 1000 1010 0010 == ࢢ
-    // 0x0Fd5 == 0000 1111 1101 0101 == ࿕
-    // 0x07ff == 0000 0111 1111 1111 == ?
+    // Other example unicode characters (spread over the 3-4 bytes):
+    // 0111 0010 1101 0000 == 狐
+    // 0000 1000 1010 0010 == ࢢ
+    // 0000 1111 1101 0101 == ࿕
+    // 0000 0111 1111 1111 == ?
 
     // As sublime text encodes source code string literals as UTF-8, the above is equivalent of the below:
     // char chinese[] = "࿕";
     // char chinese[] = "ࠀ";
-    // char chinese[] = "ࢢ";
+    char chinese[] = "ࢢ";
     // char chinese[] = "ڱ";
     // char chinese[] = "狐";
     // char chinese[] = "犬";
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     printf("%s\n", chinese);
 
     char *ptr = chinese;
-    while (*ptr) printf("%d\n", *ptr++);
+    while (*ptr) printf("%x\n", *ptr++);
     printf("\n");
 
     return 0;
