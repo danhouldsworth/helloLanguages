@@ -12,7 +12,7 @@
 
 #include <time.h>
 
-char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<h1>C : Hello, world!</h1>\r\n";
+char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1><h1>C : Hello, world!</h1>\r\n";
 
 int main()
 {
@@ -37,22 +37,22 @@ int main()
   }
 
   listen(sock, 5);
-  while (1) {
+  // while (1) {
     client_fd = accept(sock, (struct sockaddr *) &cli_addr, &sin_len);
     printf("Got connection...\n");
 
     if (client_fd == -1) {
       perror("Can't accept");
-      continue;
+      // continue;
     }
 
-    write(client_fd, response, sizeof(response) - 1); /*-1:'\0'*/
+    send(client_fd, response, sizeof(response), 0); /*-1:'\0'*/
     printf("Writing response...\n%s\n", response);
     // -- Socket closing before response finished
-    int delay = 0;
-    while (delay++<100000);
-    printf("Closing connection after delay of %d empty loops.\n", delay);
+    // int delay = 0;
+    // while (delay++<100000);
+    // printf("Closing connection after delay of %d empty loops.\n", delay);
     // --
     close(client_fd);
-  }
+  // }
 }
