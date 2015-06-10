@@ -15,6 +15,13 @@ Elegance        : Yes. Useful, self explanatory functions for sending headers, s
 
 // -- Setting declarations
 #define MAX_RECV_BUFFER 1000
+#define PACKETS_PER_FRAME 31 // Min 16 while we use 16bit multipayload
+#define WS_HEADER_BYTES 4    // FIN+OPCODE / PAYLOAD TYPE / 16bit PAYLOAD
+#define GUI_HEADER_BYTES 1
+#define GUI_OPCODE_WIPE 0
+#define GUI_OPCODE_PLOT 2
+#define GUI_OPCODE_RECT 4
+#define GUI_OPCODE_STOP 7
 // --
 
 // -- Functions
@@ -27,37 +34,101 @@ unsigned char lowByte(int i);
 unsigned char hiByte(int i);
 // --
 
-int socket_fd, client_fd; // Need this in the global namespace
-
+int socket_fd, client_fd; // Put these in the global namespace
+unsigned char guiPlotQueue[PACKETS_PER_FRAME * 8 + WS_HEADER_BYTES + GUI_HEADER_BYTES];
+unsigned char guiRectQueue[PACKETS_PER_FRAME * 12 + WS_HEADER_BYTES + GUI_HEADER_BYTES];
+unsigned char *ptrPlotQue = guiPlotQueue + WS_HEADER_BYTES + GUI_HEADER_BYTES;
+unsigned char *ptrRectQue = guiRectQueue + WS_HEADER_BYTES + GUI_HEADER_BYTES;
 //
 // -- Expose runtime API
+void closeGUIsocket();
 void guiWipe() { // Effectively used to start
         unsigned char wsFrame = 1*128 + 1*2; // FIN bit & Binary Type
-        unsigned char wsPayloadLen = 1;      // 0 guiData bytes + 1 guiCmd byte
-        unsigned char guiCmd = 0 + (1<<3);   // guiCmd code 0(of 0-7) + single guiPacket
+        unsigned char wsPayloadLen = 0+1;      // 0 guiData bytes + 1 guiCmd byte
+        unsigned char guiCmd = GUI_OPCODE_WIPE + (1<<3);   // guiCmd code 0(of 0-7) + single guiPacket
         unsigned char wsPacket[] = {wsFrame, wsPayloadLen, guiCmd};
         responseSendBin(wsPacket , 3);
 }
 void guiPlot(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
         unsigned char wsFrame = 1*128 + 1*2; // FIN bit & Binary Type
-        unsigned char wsPayloadLen = 9;      // 8 guiData bytes + 1 guiCmd byte
-        unsigned char guiCmd = 2 + (1<<3);   // guiCmd code 2(of 0-7) + single guiPacket
+        unsigned char wsPayloadLen = 8+1;      // 8 guiData bytes + 1 guiCmd byte
+        unsigned char guiCmd = GUI_OPCODE_PLOT + (1<<3);   // guiCmd code 2(of 0-7) + single guiPacket
         unsigned char wsPacket[] = {wsFrame, wsPayloadLen, guiCmd, hiByte(x), lowByte(x), hiByte(y), lowByte(y), r, g, b, a};
         responseSendBin(wsPacket , 11);
 }
+void guiPlotFlush() {
+        unsigned char wsFrame = 1*128 + 1*2; // FIN bit & Binary Type
+        unsigned char exendedPayload = 126;  // Signals that next 16bits will define payload length
+        int wsPayloadLen = 8 * PACKETS_PER_FRAME + GUI_HEADER_BYTES;      // 8 guiData bytes + 1 guiCmd byte
+        unsigned char guiCmd = GUI_OPCODE_PLOT + (PACKETS_PER_FRAME << 3);   // guiCmd code 2(of 0-7) + single guiPacket
+        guiPlotQueue[0] = wsFrame;
+        guiPlotQueue[1] = exendedPayload;
+        guiPlotQueue[2] = hiByte(wsPayloadLen);
+        guiPlotQueue[3] = lowByte(wsPayloadLen);
+        guiPlotQueue[4] = guiCmd;
+        responseSendBin(guiPlotQueue , WS_HEADER_BYTES + wsPayloadLen);
+}
+void guiPlotBuff(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+        *ptrPlotQue++ = hiByte(x);
+        *ptrPlotQue++ = lowByte(x);
+        *ptrPlotQue++ = hiByte(y);
+        *ptrPlotQue++ = lowByte(y);
+        *ptrPlotQue++ = r;
+        *ptrPlotQue++ = g;
+        *ptrPlotQue++ = b;
+        *ptrPlotQue++ = a;
+        if (ptrPlotQue >= guiPlotQueue + 8 * PACKETS_PER_FRAME){
+                ptrPlotQue = guiPlotQueue + WS_HEADER_BYTES + GUI_HEADER_BYTES;
+                guiPlotFlush();
+        }
+}
 void guiFillRect(int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
         unsigned char wsFrame = 1*128 + 1*2;  // FIN bit & Binary Type
-        unsigned char wsPayloadLen = 13;      // 12 guiData bytes + 1 guiCmd byte
-        unsigned char guiCmd = 4 + (1<<3);    // guiCmd code 4(of 0-7) + single guiPacket
+        unsigned char wsPayloadLen = 12+1;      // 12 guiData bytes + 1 guiCmd byte
+        unsigned char guiCmd = GUI_OPCODE_RECT + (1<<3);    // guiCmd code 4(of 0-7) + single guiPacket
         unsigned char wsPacket[] = {wsFrame, wsPayloadLen, guiCmd, hiByte(x), lowByte(x), hiByte(y), lowByte(y), hiByte(w), lowByte(w), hiByte(h), lowByte(h), r, g, b, a};
         responseSendBin(wsPacket , 15);
 }
+void guiRectFlush() {
+        unsigned char wsFrame = 1*128 + 1*2; // FIN bit & Binary Type
+        unsigned char exendedPayload = 126;  // Signals that next 16bits will define payload length
+        int wsPayloadLen = 12 * PACKETS_PER_FRAME + GUI_HEADER_BYTES;      // 8 guiData bytes + 1 guiCmd byte
+        unsigned char guiCmd = GUI_OPCODE_RECT + (PACKETS_PER_FRAME << 3);   // guiCmd code 2(of 0-7) + single guiPacket
+        guiRectQueue[0] = wsFrame;
+        guiRectQueue[1] = exendedPayload;
+        guiRectQueue[2] = hiByte(wsPayloadLen);
+        guiRectQueue[3] = lowByte(wsPayloadLen);
+        guiRectQueue[4] = guiCmd;
+        responseSendBin(guiRectQueue , WS_HEADER_BYTES + wsPayloadLen);
+}
+
+void guiFillRectBuff(int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+        *ptrRectQue++ = hiByte(x);
+        *ptrRectQue++ = lowByte(x);
+        *ptrRectQue++ = hiByte(y);
+        *ptrRectQue++ = lowByte(y);
+        *ptrRectQue++ = hiByte(w);
+        *ptrRectQue++ = lowByte(w);
+        *ptrRectQue++ = hiByte(h);
+        *ptrRectQue++ = lowByte(h);
+        *ptrRectQue++ = r;
+        *ptrRectQue++ = g;
+        *ptrRectQue++ = b;
+        *ptrRectQue++ = a;
+        if (ptrRectQue >= guiRectQueue + 12 * PACKETS_PER_FRAME){
+                ptrRectQue = guiRectQueue + WS_HEADER_BYTES + GUI_HEADER_BYTES;
+                guiRectFlush();
+        }
+}
 void closeGUIsocket(){
+        guiPlotFlush();
+        guiRectFlush();
         unsigned char wsFrame = 1*128 + 1*2;  // FIN bit & Binary Type
-        unsigned char wsPayloadLen = 1;       // 0 guiData bytes + 1 guiCmd byte
+        unsigned char wsPayloadLen = 0+1;       // 0 guiData bytes + 1 guiCmd byte
         unsigned char guiCmd = 7 + (1<<3);    // guiCmd code 7(of 0-7) + single guiPacket
         unsigned char wsPacket[] = {wsFrame, wsPayloadLen, guiCmd};
         responseSendBin(wsPacket , 3);
+        responseSendBin(wsPacket , 3);        // Send a spare just to be sure
         close(client_fd);
         close(socket_fd);
 }
@@ -92,6 +163,7 @@ void initGUIsocket() {
                 if ((recv_len = recv(client_fd, recvBuff, MAX_RECV_BUFFER, 0)) != 0){
                         if (strstr(recvBuff, "Connection: Upgrade")) {
                                 acceptWebSocket(recvBuff);
+                                printf("Done. GUIsocket is ready and waiting....\n");
                                 return;
                         }
                         else serveGET(recv_len, recvBuff);
@@ -122,7 +194,7 @@ void acceptWebSocket(char *recvBuff){
 void serveGET(int recv_len, char *recvBuff){
 
         if (strstr(recvBuff, "GET / ") == recvBuff){
-                unsigned char indexHTML[4669]; // !! Must increase this if extend GUIdisplay.html
+                unsigned char indexHTML[4959]; // !! Must increase this if extend GUIdisplay.html
                 unsigned char *fp = indexHTML;
                 FILE *ch = fopen("GUIdisplay.html", "r");
                 while( (*fp++ = fgetc(ch)) != (unsigned char)EOF);
@@ -163,6 +235,9 @@ void responseSendHdr(char *headerLiteral){
 }
 
 void responseSendBin(unsigned char *responseBuffer, int length){
-        // Note : this will only send length bytes of the binary responseBuffer
+        // Note : this method ignores string terminators and sends length bytes of responseBuffer
         send(client_fd, responseBuffer,  length,  0);
+        // printf("WSFrame:-->");
+        // for(int i = 0; i < length; i++) printf("%d,", responseBuffer[i]);
+        // printf("\b<--\n");
 }
