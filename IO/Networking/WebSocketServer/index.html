@@ -7,7 +7,8 @@ body{background-image:url(https://immerselearning.com/wp-content/uploads/2013/12
 </style>
 <script>
 
-  var serversocket = new WebSocket("ws://178.62.109.106/");
+  // var serversocket = new WebSocket("ws://178.62.109.106/");
+  var serversocket = new WebSocket("ws://127.0.0.1:8080/");
 
   serversocket.onopen = function() {
     serversocket.send("Connection init");
