@@ -1,14 +1,14 @@
 /*
 'mandy.c' - An example demo for my GUIsocket.c project
-Usage           :
+Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 mandy.c
 Weakness        : Hard coded screen size. Ideally set up at invokation of initGUIsocket(screenSize)
                 : Currently only using single CPU core - although still faster than Go when using all 8
-                  ToDo use fork() to split task across cores, watch for race conditions for socket()
+                  ToDo : use fork() to split task across cores, but watch for race conditions for socket()
 
 Dependancies    : Just the GUIsocket.c
 Memory          : Early version blew up the OS, this version uses no malloc()s and only has Z0 and Zn on the stack.
-Elegance        : Certainly the shortest isMandy() algorithm I've ever written.
-                : No optimisations of Mandy set (other than connected contours) as is supposed to be demo of GUIsocket
+Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
+                : No optimisations of Mandy set (other than connected contours) as is supposed to be demo of GUIsocket rather than a mandy calculator
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace

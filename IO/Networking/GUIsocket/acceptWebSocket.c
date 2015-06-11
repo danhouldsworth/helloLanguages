@@ -1,6 +1,6 @@
 /*
 'acceptWebSocket.c' - A homemade library for creating a WebSocket-Secure-Handshake key.
-Usage   : The primary function createAcceptKeyStr accepts a client handshake key, then
+Usage           : The primary function createAcceptKeyStr accepts a client handshake key, then
 i) concatenates it with the magic key
 ii) generates a 20-byte SHA1 hash
 iii) base64 encodes this (being clever about the potential for the bytes to be 0)
@@ -12,7 +12,7 @@ Elegance        : The main base64 algorithm shows my bitmask, and padding techni
 be extended as a more generic base64 encoder. This may of course be needed if the W3C spec changed the key lengths.
 */
 
-#include <openssl/sha.h>// OS X has deprecated this so need to compile wiht -Wno-deprecated-declarations -lcrypto
+#include <openssl/sha.h>// OS X has deprecated this so need to compile with -Wno-deprecated-declarations -lcrypto
 
 // -- Function declarations
 unsigned char *createAcceptKeyStr(unsigned char *base64string, unsigned char *clientKey);
