@@ -14,7 +14,7 @@ Elegance        : Yes. Clear, standalone, useful and extendable.
 #include <netinet/in.h> // sockaddr_in, socklen_t
 #include <netdb.h>      // getaddrinfo() etc
 
-#define BACKLOG 10
+#define BACKLOG 10      // The number of client connections that can queue for me to accept()
 
 int listenTCP(const char *MYPORT){
         // -- Set minimal hints and store our address info in server_info

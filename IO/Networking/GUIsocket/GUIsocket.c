@@ -4,6 +4,7 @@ Usage           : Include this file and then invoke the API commands below to ma
 Weakness        : i) Manually hardcoding the served file lengths. Abort trap if forget.
                 : ii) accept() and recv() are BLOCKING. A mis behaving browser, could easily clog it.
                 : Chrome seems to request /favicon before the WS in full screen (non-console mode). NOT FOR PRODUCTION USE.
+                : TODO - split basic file server on one process & port, and WebSocket server on seperate process & port
 Dependancies    : Only standard string functions that we could easily hand roll. The hard work is already done.
 Memory          : Pretty sure temporary stack only. Not certain about the literals and whether in ProgMem, but minor size / use.
 Elegance        : Yes. Useful, self explanatory functions for sending headers, strings, binaries. GUI API clear and extendable.
@@ -101,7 +102,6 @@ void guiRectFlush() {
         guiRectQueue[4] = guiCmd;
         responseSendBin(guiRectQueue , WS_HEADER_BYTES + wsPayloadLen);
 }
-
 void guiFillRectBuff(int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
         *ptrRectQue++ = hiByte(x);
         *ptrRectQue++ = lowByte(x);
@@ -163,7 +163,7 @@ void initGUIsocket() {
                 if ((recv_len = recv(client_fd, recvBuff, MAX_RECV_BUFFER, 0)) != 0){
                         if (strstr(recvBuff, "Connection: Upgrade")) {
                                 acceptWebSocket(recvBuff);
-                                printf("Done. GUIsocket is ready and waiting....\n");
+                                printf("Done. GUIsocket is ready and waiting. Navigate to 127.0.0.1:8080....\n");
                                 return;
                         }
                         else serveGET(recv_len, recvBuff);
