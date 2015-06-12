@@ -12,6 +12,7 @@ Elegance        : Yes. Clear, standalone, useful and extendable.
 #include <stdlib.h>     // exit(), malloc(), atoi()
 #include <unistd.h>     // fork() & close()
 #include <netinet/in.h> // sockaddr_in, socklen_t
+#include <arpa/inet.h>  // inet_ntop() Network to presentation
 #include <netdb.h>      // getaddrinfo() etc
 
 #define BACKLOG 10      // The number of client connections that can queue for me to accept()
@@ -20,7 +21,7 @@ int listenTCP(const char *MYPORT){
         // -- Set minimal hints and store our address info in server_info
         struct addrinfo hints, *server_info, *p;
         memset(&hints, 0, sizeof hints);
-        hints.ai_family         = AF_UNSPEC;            // IP4 & IP6 capable server address
+        hints.ai_family         = AF_INET;            // IP4 & IP6 capable server address
         hints.ai_socktype       = SOCK_STREAM;          // TCP
         hints.ai_protocol       = IPPROTO_TCP;          // TCP v UDP
         hints.ai_flags          = AI_PASSIVE;           // Fill in our IP for us
@@ -30,8 +31,7 @@ int listenTCP(const char *MYPORT){
         // -- Use this info to get a socket file descripter, and bind to it
         int socket_fd, yes = 1;
         for (p = server_info; p != NULL; p = p->ai_next){
-                printf("Looking at server socket...\n");
-                if ((socket_fd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol)) == -1){
+                if ((socket_fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1){
                         perror("socket");
                         continue;
                 }
@@ -39,7 +39,7 @@ int listenTCP(const char *MYPORT){
                         perror("setsockopt");
                         exit(1);
                 }
-                if (bind(socket_fd, server_info->ai_addr, server_info->ai_addrlen) == -1){
+                if (bind(socket_fd, p->ai_addr, p->ai_addrlen) == -1){
                         close(socket_fd);
                         perror("bind");
                         continue;
@@ -52,12 +52,11 @@ int listenTCP(const char *MYPORT){
         freeaddrinfo(server_info);
         // -- We now have a file descriptor socket_fd that is correctly bound to our server address & port
 
-
         if (listen(socket_fd, BACKLOG) == -1){
                 perror("listen");
                 exit(1);
         }
-        printf("Listening for connections...\n");
+        printf("Process_ID : %d. Listening for connections on %s : ...\n", getpid(), MYPORT);
 
         return socket_fd;
 }

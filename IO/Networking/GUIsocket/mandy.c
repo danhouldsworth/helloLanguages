@@ -15,6 +15,16 @@ Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
 
 #define screenSize 2048 // (2048==1<<11)
 #define maxDwell 65536  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
+#define MAX_BLOCK_DIVISION 3
+#define MAX_GENERATION 3 // Processes will be 4^generations
+/*
+    Benchtest of 2048x2048 @65536
+    0[=1] : 38seconds
+    1[=5] : 13seconds
+    2[=17]: 9.5seconds
+    3[=65]: 7.8seconds
+    4[=257]:8.2seconds
+*/
 
 typedef struct {
     double x;
@@ -28,32 +38,40 @@ complex128 mapToArgand(int x, int y);
 complex128 *complexAdd(complex128 *a, complex128 *b);
 complex128 *complexSq(complex128 *z);
 double complexModSq(complex128 *z);
-void mandy(int left, int right, int top, int bottom);
+int mandy(int generation, int left, int right, int top, int bottom);
 // --
 
 int main(void){
     initGUIsocket(); // This only returns if we get a valid WebSocket handshake after serving the app
 
     guiWipe();
-    int counter = 0;
-    for (unsigned int rectSize = screenSize; rectSize > 2; rectSize /= 2 ){
-        for (unsigned int x = 0; (x + rectSize) <= screenSize; x += rectSize){
-            for (unsigned int y = 0; (y + rectSize) <= screenSize; y += rectSize, counter++){
-                guiFillRectBuff(x,y,rectSize,rectSize,x>>3,y>>3,255-(rectSize>>3),255);
-            }
-        }
-    }
-    printf("Finished painting %d rectangles!\n", counter);
+    // printf("Now pumping hundreds of thousands of rectangles down the GUIsocket...");
+    // int counter = 0;
+    // for (unsigned int rectSize = screenSize; rectSize > 2; rectSize /= 2 ){
+    //     for (unsigned int x = 0; (x + rectSize) <= screenSize; x += rectSize){
+    //         for (unsigned int y = 0; (y + rectSize) <= screenSize; y += rectSize, counter++){
+    //             guiFillRectBuff(x,y,rectSize,rectSize,x>>3,y>>3,255-(rectSize>>3),255);
+    //         }
+    //     }
+    // }
+    // printf("Finished painting %d rectangles!\n", counter);
 
-    printf("Commencing mandlebrot set %dx%d to MaxDwell=%d...\n", screenSize,screenSize,maxDwell);
-    mandy(0, screenSize-1, 0, screenSize-1);
+    printf("Commencing mandlebrot set %dx%d to MaxDwell=%d :\n", screenSize,screenSize,maxDwell);
+    int generation = mandy(0, 0, screenSize-1, 0, screenSize-1);
+    guiPlotFlush();
+    guiRectFlush();
 
-    printf("Done! Flushing GUIsocket buffers and closing.\n");
-    closeGUIsocket();
+    int status, childCount = 0;
+    while (waitpid(0, &status, 0) != -1) {printf("%d",++childCount);} // Wait while we count in our terminated children
+    if (generation == 0){
+        printf("\nUltimate parent of %d generations has waited for all children (and their children) and now terminating GUIsocket!\n", MAX_GENERATION);
+        closeGUIsocket();
+    } else putchar('.'); // Represents a terminates process
     return 0;
 }
 
-void mandy(int left, int right, int top, int bottom) {
+int mandy(int generation, int left, int right, int top, int bottom) {
+    // NOTE : Width and Height MUST be multiple of 2
     int deltaX = 1;     // 1 == Left to right
     int deltaY = 0;     // 1 == Top to bottom
     int colourBlock = 1;// 1 == TRUE
@@ -76,13 +94,24 @@ void mandy(int left, int right, int top, int bottom) {
         if (colourBlock && dwell != firstColour) {
             colourBlock = 0;
             // -- Can we fit at least 2x2 pixel box in the inner box
-            if ( (bottom-top)>3 && (right-left)>3 ) {
+            if ( (bottom-top)>MAX_BLOCK_DIVISION && (right-left)>MAX_BLOCK_DIVISION ) {
                 int midleft = left + (right-left)/2;
                 int midtop = top + (bottom-top)/2;
-                mandy(left+1, midleft, top+1, midtop);         // TL
-                mandy(left+1, midleft, midtop+1, bottom-1);    // BL
-                mandy(1+midleft, right-1, midtop+1, bottom-1); // BR
-                mandy(1+midleft, right-1, top+1, midtop);      // TR
+                if (generation < MAX_GENERATION){
+                    if      (!fork()) return mandy(generation+1, left+1, midleft, top+1, midtop);           // TL
+                    else if (!fork()) return mandy(generation+1, left+1, midleft, midtop+1, bottom-1);      // BL
+                    else if (!fork()) return mandy(generation+1, 1+midleft, right-1, midtop+1, bottom-1);   // BR
+                    else if (!fork()) return mandy(generation+1, 1+midleft, right-1, top+1, midtop);        // TR
+                    else {} // Parent of this block will now continue the perimeter
+                } else {
+                    mandy(generation, left+1, midleft, top+1, midtop);             // Parent
+                    mandy(generation, left+1, midleft, midtop+1, bottom-1);        // Parent
+                    mandy(generation, 1+midleft, right-1, midtop+1, bottom-1);     // Parent
+                    mandy(generation, 1+midleft, right-1, top+1, midtop);          // Parent
+                }
+            } else {
+                // If MAX_BLOCK_DIVISION > 3 then we will have gaps.
+                // As the parent is about to finish the perimeter of this block and then exit.
             }
         }
         // --
@@ -110,6 +139,7 @@ void mandy(int left, int right, int top, int bottom) {
     // -- Fill the inner rectangle if the perimeter all same colour
     if (colourBlock) guiFillRectBuff(left+1, top+1, right-left-1, bottom-top-1, (unsigned char)(firstColour%64), (unsigned char)(firstColour%16), (unsigned char)(firstColour%2), 255-(unsigned char)(firstColour%256));
     // --
+    return generation;
 }
 
 

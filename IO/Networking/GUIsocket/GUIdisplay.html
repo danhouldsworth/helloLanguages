@@ -24,7 +24,7 @@
   // --
 
   // -- Establish WebSocket
-  var ws = new WebSocket("ws://127.0.0.1:8080/", "guiSocket-protocol");
+  var ws = new WebSocket("ws://10.0.1.8:8081/", "guiSocket-protocol");
   ws.binaryType = 'arraybuffer';
   id.innerText = "3. Handshake";
   ws.onopen = function() {

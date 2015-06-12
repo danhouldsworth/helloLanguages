@@ -5,12 +5,13 @@ Weakness        : i) Manually hardcoding the served file lengths. Abort trap if 
                 : ii) accept() and recv() are BLOCKING. A mis behaving browser, could easily clog it.
                 : Chrome seems to request /favicon before the WS in full screen (non-console mode). NOT FOR PRODUCTION USE.
                 : TODO - split basic file server on one process & port, and WebSocket server on seperate process & port
-Dependancies    : Only standard string functions that we could easily hand roll. The hard work is already done.
+Dependancies    : Only standard string functions that we could easily hand roll. The hard work is already done. [Edit: and now the signal.h for kill]
 Memory          : Pretty sure temporary stack only. Not certain about the literals and whether in ProgMem, but minor size / use.
 Elegance        : Yes. Useful, self explanatory functions for sending headers, strings, binaries. GUI API clear and extendable.
 */
 
 #include <string.h>             // strlen(), and strstr() etc
+#include <signal.h>
 #include "listenTCP.c"
 #include "acceptWebSocket.c"
 
@@ -146,32 +147,52 @@ unsigned char hiByte(int i) {
 
 void initGUIsocket() {
 
-        socket_fd = listenTCP("8080");
-
         // -- Create a client addr struct and (blocking) accept next client connection
         struct sockaddr_storage client_addr;            // IP4 & IP6 capable client address
         socklen_t addr_size = sizeof client_addr;
         int recv_len;
+        pid_t child_pid;
         char recvBuff[MAX_RECV_BUFFER];
         // --
 
-        while ((client_fd = accept(socket_fd, (struct sockaddr *)&client_addr, &addr_size)) != -1){
-                printf("Processing an accept()ed client connection...");
-                memset(recvBuff, 0, MAX_RECV_BUFFER);
+        if ((child_pid = fork()) == 0){ // Child process
 
-                // -- Wait for client to send request then decide between HTTP and WebSocket accept
-                if ((recv_len = recv(client_fd, recvBuff, MAX_RECV_BUFFER, 0)) != 0){
-                        if (strstr(recvBuff, "Connection: Upgrade")) {
-                                acceptWebSocket(recvBuff);
-                                printf("Done. GUIsocket is ready and waiting. Navigate to 127.0.0.1:8080....\n");
-                                return;
-                        }
-                        else serveGET(recv_len, recvBuff);
+                socket_fd = listenTCP("8080"); // PORT for GET
+
+                // Continue to serve (albeit in a blocking fashion)
+                while ((client_fd = accept(socket_fd, (struct sockaddr *)&client_addr, &addr_size)) != -1){
+                        printf("P_ID %d : Processing an accept()ed client connection...", getpid());
+                        memset(recvBuff, 0, MAX_RECV_BUFFER);
+                        // -- Wait for client to send request then serve HTTP
+                        if ((recv_len = recv(client_fd, recvBuff, MAX_RECV_BUFFER, 0)) != 0) serveGET(recv_len, recvBuff);
+                        close(client_fd);
+                        // --
                 }
-                close(client_fd);
-                // --
+                printf("P_ID %d : Browser not playing nice with socket :-(\nClosing HTTP process...", getpid());
+        } else { // Parent process
+
+                socket_fd = listenTCP("8081"); // PORT for WS
+
+                // Single Use for GUIsocket
+                if ((client_fd = accept(socket_fd, (struct sockaddr *)&client_addr, &addr_size)) != -1){
+                        printf("P_ID %d : Processing an accept()ed client connection...", getpid());
+                        memset(recvBuff, 0, MAX_RECV_BUFFER);
+                        // -- Wait for client to send request then decide between HTTP and WebSocket accept
+                        recv_len = recv(client_fd, recvBuff, MAX_RECV_BUFFER, 0);
+                        acceptWebSocket(recvBuff);
+                        printf("Done. GUIsocket is established. Terminating HTTP server process %d.\n", child_pid);
+                        kill(child_pid, SIGKILL);
+                        return;
+                        // --
+                }
+                printf("Error with WS accept(). Waiting on HTTP child process %d...\n", child_pid);
+                int status;
+                waitpid(child_pid, &status, 0);
         }
-        // -- error with accept()
+
+        // [Child can fall through and exit here, while parent WS keeps running.]
+        // [Parent arriving here will have waited for Child process to end. Hence no zombie or background processes should remain]
+        // -- error with accept().
         close(socket_fd);
         exit(1);
         // --
@@ -220,8 +241,8 @@ void serveGET(int recv_len, char *recvBuff){
                 responseSendHdr("Investigate if you see this.");
                 printf("Served 404 to request recv_len = %d: ->%s<-\n", recv_len, recvBuff);
         }
-
 }
+
 void responseSendStr(unsigned char *responseChunk){
         // Note : this relies on detecting the length of a response as if a string
         // Hence it will fail (erroneously shorten response chunk) if you want to send
