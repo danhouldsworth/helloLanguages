@@ -16,7 +16,7 @@ Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
 #define screenSize 2048 // (2048==1<<11)
 #define maxDwell 65536  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
 #define MAX_BLOCK_DIVISION 3
-#define MAX_GENERATION 3 // Processes will be 4^generations
+#define MAX_GENERATION 5 // Processes will be 4^generations
 /*
     Benchtest of 2048x2048 @65536
     0[=1] : 38seconds
@@ -24,6 +24,7 @@ Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
     2[=17]: 9.5seconds
     3[=65]: 7.8seconds
     4[=257]:8.2seconds
+    5[=1025]:7.7seconds
 */
 
 typedef struct {

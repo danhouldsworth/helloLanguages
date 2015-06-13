@@ -24,7 +24,7 @@
   // --
 
   // -- Establish WebSocket
-  var ws = new WebSocket("ws://10.0.1.8:8081/", "guiSocket-protocol");
+  var ws = new WebSocket("ws://127.0.0.1:8081/", "guiSocket-protocol");
   ws.binaryType = 'arraybuffer';
   id.innerText = "3. Handshake";
   ws.onopen = function() {
@@ -125,6 +125,7 @@
 
   // -- Refresh screen as fast as can draw
   function refresh(){
+    ctx.rotate(0.01);
     ctx.putImageData(imagedata,0,0);
     updateQued = false;
   }
