@@ -16,6 +16,8 @@ Elegance        : Yes. Clear, standalone, useful and extendable.
 #include <netdb.h>      // getaddrinfo() etc
 
 #define BACKLOG 10      // The number of client connections that can queue for me to accept()
+                        // BACKLOG limited silently by OS to 128.
+                        // Does not necessarily reject. If TCP then may ignore, so it retries.
 
 int listenTCP(const char *MYPORT){
         // -- Set minimal hints and store our address info in server_info

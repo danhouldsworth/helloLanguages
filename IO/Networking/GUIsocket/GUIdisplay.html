@@ -1,6 +1,5 @@
 <html>
 <head>
-<title>GUIsocket - 2048x2048</title>
 <body>
 <h1 id='waiting'>1. Loading</h1>
 </body>
@@ -19,7 +18,7 @@
   // -- Initialise ArrayBuffers
   var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);
   var offset = function(x,y) {return (y * canvas.width + x) * 4;}
-  var wsPackets = 0, guiPlots = 0, guiRects = 0, pixels = 0;
+  var wsPackets = 0, guiPlots = 0, guiRects = 0, guiImage = 0, pixels = 0;
   var updateQued = false;
   // --
 
@@ -105,14 +104,38 @@
       case 5: // Circle
         break;
       case 6: // ImageWrite
+        guiImage++;
+        var index = 1;
+        var xHi = guiPacketData[index++];
+        var xLo = guiPacketData[index++];
+        var yHi = guiPacketData[index++];
+        var yLo = guiPacketData[index++];
+        var wHi = guiPacketData[index++];
+        var wLo = guiPacketData[index++];
+        var hHi = guiPacketData[index++];
+        var hLo = guiPacketData[index++];
+        var x   = xHi * 256 + xLo;
+        var y   = yHi * 256 + yLo;
+        var w   = wHi * 256 + wLo;
+        var h   = hHi * 256 + hLo;
+        for (var i = x; i < x+w; i++){
+          for (var j = y; j < y+h; j++) {
+            imagedata.data[offset(i,j) + 0] = guiPacketData[index++];
+            imagedata.data[offset(i,j) + 1] = guiPacketData[index++];
+            imagedata.data[offset(i,j) + 2] = guiPacketData[index++];
+            imagedata.data[offset(i,j) + 3] = guiPacketData[index++];
+          }
+        }
+        pixels += w * h;
         break;
       case 7: // Terminate
         ws.close();
         console.log("Finished! GUIsocket stats :");
         console.log("wsPackets recieved = " + wsPackets);
-        console.log("guiPackets recieved = " + (guiRects + guiPlots));
+        console.log("guiPackets recieved = " + (guiRects + guiPlots + guiImage));
         console.log("guiRects executed = " + guiRects);
         console.log("guiPlots executed = " + guiPlots);
+        console.log("guiImagePastes executed = " + guiImage);
         console.log("pixels painted = " + pixels);
         console.log("Socket Closed. We're done.");
         break;

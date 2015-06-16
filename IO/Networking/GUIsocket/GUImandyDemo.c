@@ -1,10 +1,7 @@
 /*
 'mandy.c' - An example demo for my GUIsocket.c project
-Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 mandy.c
+Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 GUImandyDemo.c
 Weakness        : Hard coded screen size. Ideally set up at invokation of initGUIsocket(screenSize)
-                : Currently only using single CPU core - although still faster than Go when using all 8
-                  ToDo : use fork() to split task across cores, but watch for race conditions for socket()
-
 Dependancies    : Just the GUIsocket.c
 Memory          : Early version blew up the OS, this version uses no malloc()s and only has Z0 and Zn on the stack.
 Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
@@ -14,9 +11,9 @@ Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
 
 #define screenSize 2048 // (2048==1<<11)
-#define maxDwell 65536  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
+#define maxDwell (1<<20)  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
 #define MAX_BLOCK_DIVISION 3
-#define MAX_GENERATION 5 // Processes will be 4^generations
+#define MAX_GENERATION 4 // Processes will be 4^generations
 /*
     Benchtest of 2048x2048 @65536
     0[=1] : 38seconds
@@ -46,28 +43,23 @@ int main(void){
     initGUIsocket(); // This only returns if we get a valid WebSocket handshake after serving the app
 
     guiWipe();
-    // printf("Now pumping hundreds of thousands of rectangles down the GUIsocket...");
-    // int counter = 0;
-    // for (unsigned int rectSize = screenSize; rectSize > 2; rectSize /= 2 ){
-    //     for (unsigned int x = 0; (x + rectSize) <= screenSize; x += rectSize){
-    //         for (unsigned int y = 0; (y + rectSize) <= screenSize; y += rectSize, counter++){
-    //             guiFillRectBuff(x,y,rectSize,rectSize,x>>3,y>>3,255-(rectSize>>3),255);
-    //         }
-    //     }
-    // }
-    // printf("Finished painting %d rectangles!\n", counter);
+    printf("Commencing mandlebrot set %dx%d to MaxDwell=%d\n", screenSize,screenSize,maxDwell);
 
-    printf("Commencing mandlebrot set %dx%d to MaxDwell=%d :\n", screenSize,screenSize,maxDwell);
-    int generation = mandy(0, 0, screenSize-1, 0, screenSize-1);
+    int generation = mandy(0, 0, screenSize-1, 0, screenSize-1); // This will return in multiple threads
     guiPlotFlush();
     guiRectFlush();
 
     int status, childCount = 0;
-    while (waitpid(0, &status, 0) != -1) {printf("%d",++childCount);} // Wait while we count in our terminated children
-    if (generation == 0){
-        printf("\nUltimate parent of %d generations has waited for all children (and their children) and now terminating GUIsocket!\n", MAX_GENERATION);
-        closeGUIsocket();
-    } else putchar('.'); // Represents a terminates process
+    while (waitpid(0, &status, 0) != -1) {} // Wait while we count in our terminated children
+    switch (generation){
+        case 0:
+            printf("\nUltimate parent of %d generations has waited for all children (and their children) and now terminating GUIsocket!\n", MAX_GENERATION);
+            closeGUIsocket();
+            break;
+        default:
+            putchar(generation + '0');
+            break;
+    }
     return 0;
 }
 
@@ -112,7 +104,6 @@ int mandy(int generation, int left, int right, int top, int bottom) {
                 }
             } else {
                 // If MAX_BLOCK_DIVISION > 3 then we will have gaps.
-                // As the parent is about to finish the perimeter of this block and then exit.
             }
         }
         // --
