@@ -109,7 +109,6 @@ void guiFillRect(int x, int y, int w, int h, unsigned char r, unsigned char g, u
         unsigned char wsPacket[] = {wsFrameHeader, wsPayloadLen, guiCmd, hiByte(x), lowByte(x), hiByte(y), lowByte(y), hiByte(w), lowByte(w), hiByte(h), lowByte(h), r, g, b, a};
         responseSendBin(wsPacket , WS_HEADLEN_0to125PAYLOAD + wsPayloadLen);
 }
-
 void guiFillRectBuff(int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
         *ptrRectQue++ = hiByte(x);
         *ptrRectQue++ = lowByte(x);

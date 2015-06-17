@@ -5,7 +5,7 @@ Weakness        : Hard coded screen size. Ideally set up at invokation of initGU
 Dependancies    : Just the GUIsocket.c
 Memory          : Early version blew up the OS, this version uses no malloc()s and only has Z0 and Zn on the stack.
 Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
-                : No optimisations of Mandy set (other than connected contours) as is supposed to be demo of GUIsocket rather than a mandy calculator
+                : No optimisations of Mandy set (other than connected contours) applied as is supposed to be demo of GUIsocket rather than a mandy calculator
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace

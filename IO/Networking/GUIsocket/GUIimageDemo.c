@@ -3,8 +3,8 @@
 Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 GUIimageDemo.c
 Weakness        : Hard coded screen size. Ideally set up at invokation of initGUIsocket(screenSize)
 Dependancies    : sqrt() from <math.h>
-Memory          :
-Elegance?       :
+Memory          : I needed to re-use the buffer, to avoid a stack overflow. Suppose I could have used malloc() and reduced the code size.
+Elegance?       : No. But very simple to read.
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
