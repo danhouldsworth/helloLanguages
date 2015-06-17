@@ -44,6 +44,14 @@
         console.log("Listening for further guiCommands...");
         break;
       case 1: // Move
+        packetSize = 4;
+        var xHi = guiPacketData[1 + packetIndex * packetSize];
+        var xLo = guiPacketData[2 + packetIndex * packetSize];
+        var yHi = guiPacketData[3 + packetIndex * packetSize];
+        var yLo = guiPacketData[4 + packetIndex * packetSize];
+        var x   = xHi * 256 + xLo;
+        var y   = yHi * 256 + yLo;
+        // ctx.MoveTo(x,y);
         break;
       case 2: // Plot
         packetSize = 8;
@@ -69,6 +77,30 @@
         }
         break;
       case 3: // DrawTo
+        packetSize = 12;
+        for (var packetIndex = 0; packetIndex < quantity; packetIndex++){
+          guiDraws++;
+          var x1Hi = guiPacketData[ 1 + packetIndex * packetSize];
+          var x1Lo = guiPacketData[ 2 + packetIndex * packetSize];
+          var y1Hi = guiPacketData[ 3 + packetIndex * packetSize];
+          var y1Lo = guiPacketData[ 4 + packetIndex * packetSize];
+          var x2Hi = guiPacketData[ 5 + packetIndex * packetSize];
+          var x2Lo = guiPacketData[ 6 + packetIndex * packetSize];
+          var y2Hi = guiPacketData[ 7 + packetIndex * packetSize];
+          var y2Lo = guiPacketData[ 8 + packetIndex * packetSize];
+          var R    = guiPacketData[ 9 + packetIndex * packetSize];
+          var G    = guiPacketData[10 + packetIndex * packetSize];
+          var B    = guiPacketData[11 + packetIndex * packetSize];
+          var A    = guiPacketData[12 + packetIndex * packetSize];
+          var x1   = x1Hi * 256 + x1Lo;
+          var y1   = y1Hi * 256 + y1Lo;
+          var x2   = x2Hi * 256 + x2Lo;
+          var y2   = y2Hi * 256 + y2Lo;
+          // ctx.MoveTo(x1,y1);
+          // ctx.setColour(R,G,B,A);
+          // ctx.drawTo(x2,y2);
+        }
+
         break;
       case 4: // FillRect
         packetSize = 12;
