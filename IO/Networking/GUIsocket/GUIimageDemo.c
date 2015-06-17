@@ -15,7 +15,7 @@ int main(void){
     initGUIsocket(); // This only returns if we get a valid WebSocket handshake after serving the app
     guiWipe();
 
-    unsigned char imageDataRGBA[4*imgSize*imgSize + 11];
+    unsigned char imageDataRGBA[4*imgSize*imgSize + 11]; // It's convenient to include space for the 11-byte frame header, so this becomes the entire TCP payload
     unsigned char *ptr;
     ptr = &imageDataRGBA[11];
     for (int i = 0; i < imgSize; i++){

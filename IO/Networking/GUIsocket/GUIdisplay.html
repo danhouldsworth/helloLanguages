@@ -18,11 +18,13 @@
   // -- Initialise ArrayBuffers
   var imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);
   var offset = function(x,y) {return (y * canvas.width + x) * 4;}
-  var wsPackets = 0, guiPlots = 0, guiRects = 0, guiImage = 0, pixels = 0;
-  var updateQued = false;
+  var wsPackets = 0, guiPlots = 0, guiRects = 0, guiImage = 0, guiDraws = 0, pixels = 0;
+  var newUpdateNeeded = false, rawWrite = true;
   // --
 
   // -- Establish WebSocket
+  // var ws = new WebSocket("ws://10.0.1.8:8081/", "guiSocket-protocol");
+  // var ws = new WebSocket("ws://10.1.0.187:8081/", "guiSocket-protocol");
   var ws = new WebSocket("ws://127.0.0.1:8081/", "guiSocket-protocol");
   ws.binaryType = 'arraybuffer';
   id.innerText = "3. Handshake";
@@ -42,16 +44,10 @@
         imagedata = ctx.getImageData(0,0,canvas.width, canvas.height);
         console.log("guiWipe() recieved!!");
         console.log("Listening for further guiCommands...");
+        newUpdateNeeded = false;
         break;
-      case 1: // Move
-        packetSize = 4;
-        var xHi = guiPacketData[1 + packetIndex * packetSize];
-        var xLo = guiPacketData[2 + packetIndex * packetSize];
-        var yHi = guiPacketData[3 + packetIndex * packetSize];
-        var yLo = guiPacketData[4 + packetIndex * packetSize];
-        var x   = xHi * 256 + xLo;
-        var y   = yHi * 256 + yLo;
-        // ctx.MoveTo(x,y);
+      case 1: // Cancle imageData buffer writes (as they will overwrite lineTo commands)
+        rawWrite = false;
         break;
       case 2: // Plot
         packetSize = 8;
@@ -75,9 +71,11 @@
           imagedata.data[offset(x,y) + 2] = B;
           imagedata.data[offset(x,y) + 3] = A;
         }
+        newUpdateNeeded = true;
         break;
       case 3: // DrawTo
-        packetSize = 12;
+        rawWrite = false;
+        packetSize = 11;
         for (var packetIndex = 0; packetIndex < quantity; packetIndex++){
           guiDraws++;
           var x1Hi = guiPacketData[ 1 + packetIndex * packetSize];
@@ -91,16 +89,16 @@
           var R    = guiPacketData[ 9 + packetIndex * packetSize];
           var G    = guiPacketData[10 + packetIndex * packetSize];
           var B    = guiPacketData[11 + packetIndex * packetSize];
-          var A    = guiPacketData[12 + packetIndex * packetSize];
           var x1   = x1Hi * 256 + x1Lo;
           var y1   = y1Hi * 256 + y1Lo;
           var x2   = x2Hi * 256 + x2Lo;
           var y2   = y2Hi * 256 + y2Lo;
-          // ctx.MoveTo(x1,y1);
-          // ctx.setColour(R,G,B,A);
-          // ctx.drawTo(x2,y2);
+          ctx.beginPath();
+          ctx.strokeStyle = "rgb("+R+","+G+","+B+")"; // No alpha channel
+          ctx.moveTo(x1,y1);
+          ctx.lineTo(x2,y2);
+          ctx.stroke();
         }
-
         break;
       case 4: // FillRect
         packetSize = 12;
@@ -132,6 +130,7 @@
             }
           }
         }
+        newUpdateNeeded = true;
         break;
       case 5: // Circle
         break;
@@ -159,30 +158,31 @@
           }
         }
         pixels += w * h;
+        newUpdateNeeded = true;
         break;
       case 7: // Terminate
         ws.close();
+        rawWrite = false;
         console.log("Finished! GUIsocket stats :");
-        console.log("wsPackets recieved = " + wsPackets);
-        console.log("guiPackets recieved = " + (guiRects + guiPlots + guiImage));
+        console.log("wsPackets recieved (including Start & Stop) = " + wsPackets);
+        console.log("guiPackets recieved = " + (guiRects + guiPlots + guiImage + guiDraws));
         console.log("guiRects executed = " + guiRects);
         console.log("guiPlots executed = " + guiPlots);
+        console.log("guiDraws executed = " + guiDraws);
         console.log("guiImagePastes executed = " + guiImage);
-        console.log("pixels painted = " + pixels);
+        console.log("pixels directly painted (via imageData Buffer) = " + pixels);
         console.log("Socket Closed. We're done.");
         break;
       default:
     }
-    if (updateQued == false) {window.requestAnimationFrame(refresh);updateQued = true;}
-    // window.requestAnimationFrame(refresh);
+    if (rawWrite && newUpdateNeeded) {window.requestAnimationFrame(refresh);}
   };
   // --
 
   // -- Refresh screen as fast as can draw
   function refresh(){
-    ctx.rotate(0.01);
     ctx.putImageData(imagedata,0,0);
-    updateQued = false;
+    newUpdateNeeded = false;
   }
   // --
 

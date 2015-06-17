@@ -11,7 +11,7 @@ Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
 
 #define screenSize 2048 // (2048==1<<11)
-#define maxDwell (1<<20)  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
+#define maxDwell (1<<10)  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
 #define MAX_BLOCK_DIVISION 3
 #define MAX_GENERATION 4 // Processes will be 4^generations
 /*
