@@ -8,7 +8,7 @@ Elegance?       :
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
-
+#include <math.h>
 #define imgSize 1000
 
 // -- Function declarations
@@ -53,10 +53,10 @@ int main(void){
     guiPasteImage(0, 1000,   imgSize, imgSize, imageDataRGBA);
     for (int i = 0; i < imgSize; i++){
       for (int j = 0; j < imgSize; j++) {
-        *ptr++ = (unsigned char)(i);
-        *ptr++ = (unsigned char)(j);
-        *ptr++ = (unsigned char)(i+j);
-        *ptr++ = (unsigned char)(i*j);
+        *ptr++ = (unsigned char)sqrt(i*i+j*j);
+        *ptr++ = (unsigned char)sqrt((imgSize-i)*(imgSize-i)+j*j);
+        *ptr++ = (unsigned char)sqrt(i*i+(imgSize-j)*(imgSize-j));
+        *ptr++ = (unsigned char)sqrt((imgSize-i)*(imgSize-i)+(imgSize-j)*(imgSize-j));
       }
     }
     guiPasteImage(1000, 1000,   imgSize, imgSize, imageDataRGBA);
