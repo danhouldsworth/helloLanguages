@@ -8,7 +8,7 @@ Elegance?       :
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
-// #include <math.h>
+#include <math.h>
 #define imgSize 1000
 
 int main(void){
