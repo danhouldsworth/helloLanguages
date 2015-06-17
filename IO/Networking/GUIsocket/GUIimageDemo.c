@@ -2,17 +2,14 @@
 'GUIimageDemo.c' - An example demo for my GUIsocket.c project showing off GUIpasteImage
 Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 GUIimageDemo.c
 Weakness        : Hard coded screen size. Ideally set up at invokation of initGUIsocket(screenSize)
-Dependancies    : Just the GUIsocket.c
+Dependancies    : sqrt() from <math.h>
 Memory          :
 Elegance?       :
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
-#include <math.h>
+// #include <math.h>
 #define imgSize 1000
-
-// -- Function declarations
-// --
 
 int main(void){
     initGUIsocket(); // This only returns if we get a valid WebSocket handshake after serving the app
