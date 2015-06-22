@@ -1,10 +1,11 @@
 /*
 'GUIfunctionDraw.c' - An example putting guiDrawLine() to use to render functions
 Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 GUIfunctionDraw.c
-Weakness        : Have to fudge to avoid singularities....
+Weakness        : Have to fudge to avoid singularities. Cannot differentiate dicontinuities.
 Dependancies    : <math.h> for sqrt(), sin(), exp() etc. A nice compliment to this project
 Memory          : No issue.
 Elegance?       : Can't figure out how to return pointers to dynamic functions. Maybe not possible?
+                : Pretty cool the way we can chart existing functions just by function pointer name.
 */
 
 #include "GUIsocket.c"
@@ -28,10 +29,10 @@ void renderFunctionOfX(PointerToFuncOfX, int, int, int); // Renders any f(x), fo
 
 // -- Typical Math Functions
 double mod(double x) {return sqrt(x*x);}
-double fn1(double x) {return sin(x)/x;}
-double fn2(double x) {return 1 + x*x/1000;}
-double fn3(double x) {return exp(1 / fn2(x*x)) - 2;}
+double quadratic(double x) {return 1 + x*x/1000;}
 double step(double x){return (mod(x) < 2) ? 1 : 0;}
+double fn1(double x) {return sin(x)/x;}
+double fn2(double x) {return 1 / exp(1 / quadratic(10*x));}
 // --
 //
 double diff(PointerToFuncOfX f, double x, int order){
@@ -41,13 +42,10 @@ double diff(PointerToFuncOfX f, double x, int order){
 // -- I can't figure out how to return a pointer to a dynamically created function f'(x), so for now we manually define the differentiated functions we want
 double diff1_fn1(double x){return diff(fn1, x, 1);} // 1st order diffs wrt x
 double diff1_fn2(double x){return diff(fn2, x, 1);}
-double diff1_fn3(double x){return diff(fn3, x, 1);}
 double diff2_fn1(double x){return diff(fn1, x, 2);} // 2ns order diffs wrt x
 double diff2_fn2(double x){return diff(fn2, x, 2);}
-double diff2_fn3(double x){return diff(fn3, x, 2);}
 double diff3_fn1(double x){return diff(fn1, x, 3);} // 3rd order diffs wrt x
 double diff3_fn2(double x){return diff(fn2, x, 3);}
-double diff3_fn3(double x){return diff(fn3, x, 3);}
 // --
 
 int main(void){
@@ -55,19 +53,15 @@ int main(void){
 
     guiWipe();
 
+    renderFunctionOfX(step,     0,  0,  255);
     renderFunctionOfX(fn1,      255,0,  0  );
     renderFunctionOfX(fn2,      0,  255,0  );
-    renderFunctionOfX(fn3,      0,  0,  255);
     renderFunctionOfX(diff1_fn1,255,128,128);
     renderFunctionOfX(diff1_fn2,128,255,128);
-    renderFunctionOfX(diff1_fn3,128,128,255);
     renderFunctionOfX(diff2_fn1,255,192,192);
     renderFunctionOfX(diff2_fn2,192,255,192);
-    renderFunctionOfX(diff2_fn3,192,192,255);
     renderFunctionOfX(diff3_fn1,255,224,224);
     renderFunctionOfX(diff3_fn2,224,255,224);
-    renderFunctionOfX(diff3_fn3,224,224,255);
-    renderFunctionOfX(step,     0,  0,  0  );
     // renderFunctionOfX(cos,   128,128,128); // Note, we could use any existing function(x) from <math.h> ...!!
 
     closeGUIsocket();
