@@ -149,8 +149,8 @@
         var y   = yHi * 256 + yLo;
         var w   = wHi * 256 + wLo;
         var h   = hHi * 256 + hLo;
-        for (var i = x; i < x+w; i++){
-          for (var j = y; j < y+h; j++) {
+        for (var j = y; j < y+h; j++) {
+          for (var i = x; i < x+w; i++){
             imagedata.data[offset(i,j) + 0] = guiPacketData[index++];
             imagedata.data[offset(i,j) + 1] = guiPacketData[index++];
             imagedata.data[offset(i,j) + 2] = guiPacketData[index++];

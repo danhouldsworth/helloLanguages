@@ -1,6 +1,6 @@
 /*
 'GUIimageDemo.c' - An example demo for my GUIsocket.c project showing off GUIpasteImage
-Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 GUIimageDemo.c
+Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 GUIimageDemo2.c
 Weakness        : Hard coded screen size. Ideally set up at invokation of initGUIsocket(screenSize)
 Dependancies    : sqrt() from <math.h>
 Memory          : I needed to re-use the buffer, to avoid a stack overflow. Suppose I could have used malloc() and reduced the code size.
@@ -20,10 +20,11 @@ int main(void){
     double radius,dx,dy;
     ptr = imageDataRGBA + 11;
     for (double c = 24; c < 26; c+=0.2){
-        for (int i = 0; i < imgSize; i++){
-            for (int j = 0; j < imgSize; j++) {
-                dx = i - imgSize/2 ; dy = j - imgSize/2 ;
+        for (int j = 0; j < imgSize; j++) {
+            for (int i = 0; i < imgSize; i++){
+                dx = i - imgSize/2 ; dy = imgSize/2 - j ;
                 radius = sqrt(dx*dx + dy*dy);
+                if (dx < 0 && dy < 0) radius = 0;
                 *ptr++ = (unsigned char)(127+127*sin(radius/24));
                 *ptr++ = (unsigned char)(127+127*sin(radius/25));
                 *ptr++ = (unsigned char)(127+127*sin(radius/26));

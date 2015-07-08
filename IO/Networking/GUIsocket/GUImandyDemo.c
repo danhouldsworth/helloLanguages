@@ -10,7 +10,7 @@ Elegance?       : Certainly the shortest isMandy() algorithm I've ever written.
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
 
-#define screenSize 2048 // (2048==1<<11)
+#define screenSize 512 // (2048==1<<11)
 #define maxDwell (1<<10)  // (8192==1<<13, 32768==1<<15, 65536==1<<16)
 #define MAX_BLOCK_DIVISION 3
 #define MAX_GENERATION 4 // Processes will be 4^generations
@@ -80,7 +80,8 @@ int mandy(int generation, int left, int right, int top, int bottom) {
         // -- Set Z0 aka C, and iterate to get & plot dwell
         z0 = mapToArgand(i,j);
         dwell = isMandy(z0);
-        guiPlotBuff(i, j, (unsigned char)(dwell%64), (unsigned char)(dwell%16), (unsigned char)(dwell%2), 255-(unsigned char)(dwell%256));
+        // guiPlotBuff(i, j, (unsigned char)(dwell%64), (unsigned char)(dwell%16), (unsigned char)(dwell%2), 255-(unsigned char)(dwell%256));
+        guiPlotBuff(i, j, (unsigned char)(dwell%2), (unsigned char)(dwell%2), (unsigned char)(dwell%2), 255);
         // --
 
         // -- If not going to be a solic block, flag it and look to divide recursively
@@ -129,7 +130,8 @@ int mandy(int generation, int left, int right, int top, int bottom) {
         // --
     }
     // -- Fill the inner rectangle if the perimeter all same colour
-    if (colourBlock) guiFillRectBuff(left+1, top+1, right-left-1, bottom-top-1, (unsigned char)(firstColour%64), (unsigned char)(firstColour%16), (unsigned char)(firstColour%2), 255-(unsigned char)(firstColour%256));
+    // if (colourBlock) guiFillRectBuff(left+1, top+1, right-left-1, bottom-top-1, (unsigned char)(firstColour%64), (unsigned char)(firstColour%16), (unsigned char)(firstColour%2), 255-(unsigned char)(firstColour%256));
+    if (colourBlock) guiFillRectBuff(left+1, top+1, right-left-1, bottom-top-1, (unsigned char)(firstColour%2), (unsigned char)(firstColour%2), (unsigned char)(firstColour%2), 255);
     // --
     return generation;
 }
