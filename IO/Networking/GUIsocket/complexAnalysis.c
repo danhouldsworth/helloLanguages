@@ -1,10 +1,12 @@
 /*
 'complexAnalysis.c' - I realised this might be useful for experimenting with complex functions
 Usage           : gcc -Wno-deprecated-declarations -lcrypto -O3 complexAnalysis.c
-Weakness        :
-Dependancies    : sqrt() from <math.h>
+Weakness        : Colour scheme confused poles / singularities unless make first band large.
+Dependancies    : <complex.h> and sqrt() from <math.h>,
 Memory          :
-Elegance?       :
+Elegance?       : Yes, using 'native' complex algebra makes for intuitive calculations
+                : Nice exploration of poles / singularities
+                : Nice method of banding saturation and value
 */
 
 #include "GUIsocket.c" // Note : puts socket_fd and client_fd in the global namespace
