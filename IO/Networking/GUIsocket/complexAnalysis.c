@@ -17,7 +17,7 @@ Elegance?       : Yes, using 'native' complex algebra makes for intuitive calcul
 void chooseHSV( double complex z, double HSVcolor[3] ){
     double modulus      = cabs(z);
     double bandStart    = 0;
-    double bandEnd      = 0.001;
+    double bandEnd      = 1;
     while (modulus > bandEnd){ // Chose first band that modulus sits in
         bandStart = bandEnd;
         bandEnd = bandEnd * 2.7183;
@@ -73,7 +73,7 @@ int main(void){
             // Map to screen to [-5:5]x[-5:5]
             z = (i - (double)imgSize/2)/100 + I*((double)imgSize/2 - j)/100;
 
-            f = (z - 1) * (z + 1) * (z - 3 - I) * (z - 4 - I) / ( (z + 2 + I) * (z - 1 - I) );
+            f = (z - 1) * (z + 1) * (z - 3 - I) * (z - 6 - I) / ( (z + 2 + I) * (z - 3) );
             chooseHSV( f, HSVcolor );
             mapHSVtoRGB(HSVcolor,RGBcolor);
 
